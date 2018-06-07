@@ -60,3 +60,4 @@ Wanneer het integreren van de Arduino wordt goedgekeurd, zal dit extra complexit
 - http://www.thesocialmediatoday.com/android-app-templates-with-google-play-demo/
 - http://veggieharvest.com/
 - https://www.pexels.com
+- https://www.viralandroid.com/2015/09/simple-android-tabhost-and-tabwidget-example.html
