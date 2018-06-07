@@ -59,3 +59,4 @@ Wanneer het integreren van de Arduino wordt goedgekeurd, zal dit extra complexit
 - https://material.io/tools/icons/?style=baseline
 - http://www.thesocialmediatoday.com/android-app-templates-with-google-play-demo/
 - http://veggieharvest.com/
+- https://www.pexels.com
