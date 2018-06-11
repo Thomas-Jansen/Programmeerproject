@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TabHost;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MyPLantActivity extends AppCompatActivity {
 
     TabHost tabHost;
@@ -16,6 +18,12 @@ public class MyPLantActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myplant);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) {
+            Intent intentLogin = new Intent(MyPLantActivity.this, LoginActivity.class);
+            startActivity(intentLogin);
+        }
 
         TabHost host = findViewById(R.id.tabHost);
         host.setup();

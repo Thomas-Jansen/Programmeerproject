@@ -7,12 +7,20 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class LinkingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_linking);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) {
+            Intent intentLogin = new Intent(LinkingActivity.this, LoginActivity.class);
+            startActivity(intentLogin);
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);

@@ -8,4 +8,6 @@
     <string name="title_status">Status</string>
     <string name="title_watering">Watering</string>
     <string name="title_data">Data</string>
+
+    <string name="Welcome">Welcome</string>
 </resources>

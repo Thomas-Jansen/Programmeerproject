@@ -33,6 +33,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth != null) {
+            Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
+            startActivity(intentAccount);
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -87,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
             String accountEmail = String.valueOf(editTextEmail.getText());
             String accountPassword = String.valueOf(editTextEmail.getText());
-            if (accountEmail == "" || accountPassword == "") {
+            if (accountEmail.equals("")|| accountPassword.equals("")) {
                 Toast.makeText(LoginActivity.this, "Please provide email and password", LENGTH_LONG).show();
             }
             else {
@@ -115,11 +119,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
-
 
     private class mOnNavigationItemSelectedListener
             implements BottomNavigationView.OnNavigationItemSelectedListener {
