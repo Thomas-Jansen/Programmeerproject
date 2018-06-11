@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "410170106999",
+    "firebase_url": "https://plantbase-54195.firebaseio.com",
+    "project_id": "plantbase-54195",
+    "storage_bucket": "plantbase-54195.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410170106999:android:f1ed0813dedb2008",
+        "android_client_info": {
+          "package_name": "thomas.jansen.plantbase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410170106999-re5lvkaan10aijna5uhmrvf0aimt6qbs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "thomas.jansen.plantbase",
+            "certificate_hash": "6994096d8604e607f84dfe42d1d621f4fe795cdb"
+          }
+        },
+        {
+          "client_id": "410170106999-pmbqelrkpbmbpnaof113t4hi8j5nocbk.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "410170106999-pmbqelrkpbmbpnaof113t4hi8j5nocbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY9Jv10jPhqQhpRAhRx85eBdIJsZA1z-I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410170106999-pmbqelrkpbmbpnaof113t4hi8j5nocbk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

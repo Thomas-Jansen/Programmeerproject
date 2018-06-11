@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PlantBase</string>
+    <string name="title_search">Search</string>
+    <string name="title_plants">My Plants</string>
+    <string name="title_linking">Linked</string>
+    <string name="title_account">Account</string>
+
+    <string name="title_status">Status</string>
+    <string name="title_watering">Watering</string>
+    <string name="title_data">Data</string>
+</resources>
