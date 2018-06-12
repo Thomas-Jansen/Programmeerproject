@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,16 @@ public class SearchList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_search);
+
+        FirebaseDatabase database =  FirebaseDatabase.getInstance();
+
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            String search = String.valueOf(getIntent().getCharSequenceExtra("search"));
+            System.out.println(search);
+
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);

@@ -27,8 +27,33 @@
             android:id="@+id/textViewAccountName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand"
+            android:fontFamily="@font/quicksand_regular"
             android:text="Name"
+            android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="Logout"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/textViewGrowingPlants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="You are growing # plants"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textViewDeadPlants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="# plants died"
             android:textAlignment="center" />
     </LinearLayout>
 

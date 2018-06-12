@@ -20,7 +20,7 @@ public class MyPLantActivity extends AppCompatActivity {
         setContentView(R.layout.activity_myplant);
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth == null) {
+        if (mAuth.getCurrentUser() == null) {
             Intent intentLogin = new Intent(MyPLantActivity.this, LoginActivity.class);
             startActivity(intentLogin);
         }

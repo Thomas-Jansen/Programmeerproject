@@ -7,10 +7,22 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class SearchActivity extends AppCompatActivity {
+
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +35,87 @@ public class SearchActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
         navigation.getMenu().getItem(0).setChecked(true);
 
-        EditText editTextSearch = findViewById(R.id.editTextSearch);
         ImageButton buttonSearch = findViewById(R.id.buttonSearch);
-        buttonSearch.setOnClickListener(new onClickListenerSearch());
+        buttonSearch.setOnClickListener(new searchonClickListenerSearch());
+        Button buttonBrowse = findViewById(R.id.buttonBrowse);
+        buttonBrowse.setOnClickListener(new browseonClickListener());
+
+        Button buttonAdd = findViewById(R.id.buttonAdd);
+        buttonAdd.setOnClickListener(new addonClickListener());
+
+
+        database = FirebaseDatabase.getInstance();
     }
 
-    private class onClickListenerSearch implements View.OnClickListener {
+    private class addonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Intent intentAdd = new Intent(SearchActivity.this, AddPlantActivity.class);
+            startActivity(intentAdd);
+        }
+    }
 
+    private class searchonClickListenerSearch implements View.OnClickListener {
+        String searchString;
         @Override
         public void onClick(View view) {
-            Intent intentSearchList = new Intent(SearchActivity.this, SearchList.class);
-            startActivity(intentSearchList);
+            EditText editTextSearch = findViewById(R.id.editTextSearch);
+            searchString = String.valueOf(editTextSearch.getText()).toLowerCase();
+            if (!searchString.isEmpty()) {
+                searchString = searchString.substring(0, 1).toUpperCase() + searchString.substring(1);
+
+                DatabaseReference myRef = database.getReference("plantsdata");
+
+                ValueEventListener plantListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get Post object and use the values to update the UI
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Plant plant = child.getValue(Plant.class);
+                            if (plant != null) {
+                                if (plant.getName().equals(searchString)) {
+                                    Intent intentSearchList = new Intent(SearchActivity.this, PlantInfoActivity.class);
+                                    intentSearchList.putExtra("searchedPlant", plant);
+                                    startActivity(intentSearchList);
+                                }
+
+                            } else {
+                                Toast.makeText(SearchActivity.this, "Couldn't find the plant you're looking for", LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+                        System.out.println("No data");
+                    }
+                };
+                myRef.addValueEventListener(plantListener);
+            }
+
+        }
+    }
+
+    private class browseonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            DatabaseReference myRef = database.getReference("Plants");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    System.out.println(snapshot.getValue());
+
+                    if (snapshot.getValue() != null) {
+//                        create plants array list for adapter
+                        Intent intentSearchList = new Intent(SearchActivity.this, SearchList.class);
+                        startActivity(intentSearchList);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println("No data");
+                }
+            });
         }
     }
 

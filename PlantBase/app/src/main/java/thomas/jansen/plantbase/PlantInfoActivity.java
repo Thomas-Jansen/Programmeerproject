@@ -18,6 +18,11 @@ public class PlantInfoActivity extends AppCompatActivity {
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
         navigation.getMenu().getItem(0).setChecked(true);
+
+        Intent intent = getIntent();
+        Plant currentPlant = (Plant) intent.getSerializableExtra("searchedPlant");
+
+
     }
 
     private class mOnNavigationItemSelectedListener

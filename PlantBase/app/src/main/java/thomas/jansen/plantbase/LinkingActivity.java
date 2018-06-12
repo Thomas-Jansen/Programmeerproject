@@ -17,7 +17,7 @@ public class LinkingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_linking);
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth == null) {
+        if (mAuth.getCurrentUser() == null) {
             Intent intentLogin = new Intent(LinkingActivity.this, LoginActivity.class);
             startActivity(intentLogin);
         }
