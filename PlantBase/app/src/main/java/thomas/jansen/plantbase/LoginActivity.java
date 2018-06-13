@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -56,9 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View view) {
 
             String accountEmail = String.valueOf(editTextEmail.getText());
-            String accountPassword = String.valueOf(editTextEmail.getText());
-            if (accountEmail.equals("") || accountPassword.equals("")) {
+            String accountPassword = String.valueOf(editTextPassword.getText());
+            if (accountEmail.isEmpty() || accountPassword.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Please provide email and password", LENGTH_LONG).show();
+            }
+            if (accountPassword.length() < 6) {
+                Toast.makeText(LoginActivity.this, "Please provide a password with a minimum of 6 characters", LENGTH_LONG).show();
             }
             else {
                 mAuth.createUserWithEmailAndPassword(accountEmail, accountPassword)
@@ -68,8 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
                             Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
                             startActivity(intentAccount);
 
@@ -90,32 +90,31 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View view) {
 
             String accountEmail = String.valueOf(editTextEmail.getText());
-            String accountPassword = String.valueOf(editTextEmail.getText());
-            if (accountEmail.equals("")|| accountPassword.equals("")) {
-                Toast.makeText(LoginActivity.this, "Please provide email and password", LENGTH_LONG).show();
-            }
-            else {
+            String accountPassword = String.valueOf(editTextPassword.getText());
+            if (!accountEmail.isEmpty() && !accountPassword.isEmpty()) {
                 mAuth.signInWithEmailAndPassword(accountEmail, accountPassword)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d(TAG, "signInWithEmail:success");
 
-                            Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
-                            startActivity(intentAccount);
+                                    Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
+                                    startActivity(intentAccount);
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
 
-                        }
-                    }
-                });
+                                }
+                            }
+                        });
+            }
+            else {
+                Toast.makeText(LoginActivity.this, "Please provide email and password", LENGTH_LONG).show();
             }
         }
     }

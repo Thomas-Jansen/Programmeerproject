@@ -8,13 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class SearchList extends AppCompatActivity {
 
@@ -23,26 +19,17 @@ public class SearchList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_search);
 
-        FirebaseDatabase database =  FirebaseDatabase.getInstance();
-
-
         Intent intent = getIntent();
-        if (intent != null) {
-            String search = String.valueOf(getIntent().getCharSequenceExtra("search"));
-            System.out.println(search);
+        ArrayList<Plant> arrayListPlant = (ArrayList<Plant>) intent.getSerializableExtra("plantsList");
 
-        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
         navigation.getMenu().getItem(0).setChecked(true);
 
-        List<String> arrayPlants = new ArrayList<>();
-        arrayPlants.add("Basil");
-        arrayPlants.add("Parsley");
         ListView listViewPlants = findViewById(R.id.listViewPlants);
-        ArrayAdapter<String> adapterPlants = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayPlants);
+        plantsListAdapter adapterPlants = new plantsListAdapter(this, R.layout.item_plant_info, arrayListPlant);
         listViewPlants.setAdapter(adapterPlants);
         listViewPlants.setOnItemClickListener(new ListItemClickListener());
     }
@@ -50,7 +37,10 @@ public class SearchList extends AppCompatActivity {
     private class ListItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            Plant clickedPlant = (Plant) adapterView.getItemAtPosition(i);
             Intent intentPlant = new Intent(SearchList.this, PlantInfoActivity.class);
+            intentPlant.putExtra("clickedPlant", clickedPlant);
             startActivity(intentPlant);
         }
     }

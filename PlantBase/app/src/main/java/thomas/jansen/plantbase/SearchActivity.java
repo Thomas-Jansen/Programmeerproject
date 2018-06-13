@@ -18,11 +18,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import static android.widget.Toast.LENGTH_LONG;
 
 public class SearchActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
+    ArrayList<Plant> arrayListPlants = new ArrayList<>();
+    ArrayList<String> arrayListPlantNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
         database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("plantsdata");
+        myRef.orderByChild("name").addValueEventListener(new plantListener());
     }
 
     private class addonClickListener implements View.OnClickListener {
@@ -52,6 +58,24 @@ public class SearchActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intentAdd = new Intent(SearchActivity.this, AddPlantActivity.class);
             startActivity(intentAdd);
+        }
+    }
+
+    private class plantListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                Plant plant = child.getValue(Plant.class);
+                if (plant != null) {
+                    arrayListPlants.add(plant);
+                    arrayListPlantNames.add(plant.getName());
+                }
+            }
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Toast.makeText(SearchActivity.this, (CharSequence) databaseError, LENGTH_LONG).show();
         }
     }
 
@@ -63,51 +87,31 @@ public class SearchActivity extends AppCompatActivity {
             searchString = String.valueOf(editTextSearch.getText()).toLowerCase();
             if (!searchString.isEmpty()) {
                 searchString = searchString.substring(0, 1).toUpperCase() + searchString.substring(1);
-
-                DatabaseReference myRef = database.getReference("plantsdata");
-
-                ValueEventListener plantListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get Post object and use the values to update the UI
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            Plant plant = child.getValue(Plant.class);
-                            if (plant != null) {
-                                if (plant.getName().equals(searchString)) {
-                                    Intent intentSearchList = new Intent(SearchActivity.this, PlantInfoActivity.class);
-                                    intentSearchList.putExtra("searchedPlant", plant);
-                                    startActivity(intentSearchList);
-                                }
-
-                            } else {
-                                Toast.makeText(SearchActivity.this, "Couldn't find the plant you're looking for", LENGTH_LONG).show();
-                            }
-                        }
+                for (Plant plant: arrayListPlants) {
+                    if (plant.getName().equals(searchString)) {
+                        Intent intentSearchList = new Intent(SearchActivity.this, PlantInfoActivity.class);
+                        intentSearchList.putExtra("searchedPlant", plant);
+                        startActivity(intentSearchList);
+                        return;
                     }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Getting Post failed, log a message
-                        System.out.println("No data");
-                    }
-                };
-                myRef.addValueEventListener(plantListener);
+                }
+                Toast.makeText(SearchActivity.this, "Couldn't find the plant you're looking for", LENGTH_LONG).show();
             }
-
         }
     }
 
     private class browseonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            DatabaseReference myRef = database.getReference("Plants");
+            DatabaseReference myRef = database.getReference("plantsdata");
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     System.out.println(snapshot.getValue());
 
                     if (snapshot.getValue() != null) {
-//                        create plants array list for adapter
                         Intent intentSearchList = new Intent(SearchActivity.this, SearchList.class);
+                        intentSearchList.putExtra("plantsList", arrayListPlants);
                         startActivity(intentSearchList);
                     }
                 }

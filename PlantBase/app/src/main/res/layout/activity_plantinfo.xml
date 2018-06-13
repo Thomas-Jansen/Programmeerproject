@@ -14,6 +14,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -31,28 +32,80 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textViewPH"
+            android:id="@+id/textViewPlantNameLatin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="pH:" />
+            android:text="LatinName"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/textViewMinTemp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Min Temperature:" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewMaxTemp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Max Temperature:" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewMinPh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_regular"
+                    android:text="Min pH"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textViewMinTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_regular"
+                    android:text="Min Temperature:"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewMaxPh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_regular"
+                    android:text="Max pH"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textViewMaxTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_regular"
+                    android:text="Max Temperature:"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textViewWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Watering:" />
+            android:fontFamily="@font/quicksand_regular"
+            android:text="Watering:"
+            android:textAlignment="center"
+            android:textSize="18sp" />
 
         <HorizontalScrollView
             android:id="@+id/horizontal_scroll"
@@ -67,6 +120,18 @@
                 android:orientation="horizontal"></LinearLayout>
 
         </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/buttonAddCollection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="Add this plant to my collection"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -85,5 +150,6 @@
             app:menu="@menu/navigation"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
+
     </LinearLayout>
 </LinearLayout>
