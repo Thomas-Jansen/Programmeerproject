@@ -8,15 +8,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class MyPlantsList extends AppCompatActivity {
+
+    ArrayList<MyPlant> arrayListMyPlants = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,27 +36,52 @@ public class MyPlantsList extends AppCompatActivity {
         if (mAuth.getCurrentUser() == null) {
             Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
             startActivity(intentLogin);
+            return;
         }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(Objects.requireNonNull(mAuth.getUid()));
+        myRef.orderByChild("name").addValueEventListener(new myPlantListener());
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
         navigation.getMenu().getItem(1).setChecked(true);
-
-        List<String> arrayPlants = new ArrayList<>();
-        arrayPlants.add("Basil");
-        arrayPlants.add("Parsley");
-        ListView listViewPlants = findViewById(R.id.listViewMyPlants);
-        ArrayAdapter<String> adapterPlants = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayPlants);
-        listViewPlants.setAdapter(adapterPlants);
-        listViewPlants.setOnItemClickListener(new ListItemClickListener());
     }
 
     private class ListItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Intent intentPlant = new Intent(MyPlantsList.this, MyPLantActivity.class);
-            startActivity(intentPlant);
+            MyPlant clickedMyPlant = (MyPlant) adapterView.getItemAtPosition(i);
+            Intent intentMyPlant = new Intent(MyPlantsList.this, MyPLantActivity.class);
+            intentMyPlant.putExtra("clickedMyPlant", clickedMyPlant);
+            startActivity(intentMyPlant);
+        }
+    }
+
+    private void gotMyPlantsArraylist() {
+        ListView listViewMyPlants = findViewById(R.id.listViewMyPlants);
+        myPlantsListAdapter adapterMyPlants = new myPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
+        listViewMyPlants.setAdapter(adapterMyPlants);
+        listViewMyPlants.setOnItemClickListener(new ListItemClickListener());
+    }
+
+    private class myPlantListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                MyPlant myplant = child.getValue(MyPlant.class);
+                if (myplant != null) {
+                    System.out.println(myplant.getName());
+                    arrayListMyPlants.add(myplant);
+                }
+            }
+            gotMyPlantsArraylist();
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Toast.makeText(MyPlantsList.this, (CharSequence) databaseError, LENGTH_LONG).show();
         }
     }
 

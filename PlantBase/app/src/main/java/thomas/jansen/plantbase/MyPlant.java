@@ -7,6 +7,7 @@ public class MyPlant implements Serializable{
 
     private String name;
     private String latinName;
+    private String status;
     private float maxTemp;
     private float maxpH;
     private float minTemp;
@@ -20,10 +21,11 @@ public class MyPlant implements Serializable{
 
     public MyPlant(){}
 
-    public MyPlant(String name, String latinName, float maxTemp, float maxpH, float minTemp, float minpH,
+    public MyPlant(String name, String latinName, String status, float maxTemp, float maxpH, float minTemp, float minpH,
                    float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify) {
         this.name = name;
         this.latinName = latinName;
+        this.status = status;
         this.maxTemp = maxTemp;
         this.maxpH = maxpH;
         this.minTemp = minTemp;
@@ -34,6 +36,14 @@ public class MyPlant implements Serializable{
         this.connected = connected;
         this.arduinoName = arduinoName;
         this.waternotify = waternotify;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getWaternotify() {

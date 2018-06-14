@@ -76,6 +76,14 @@ public class PlantInfoActivity extends AppCompatActivity {
     private class addToCollectionOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            if (mAuth.getCurrentUser() == null) {
+                Intent intentLogin = new Intent(PlantInfoActivity.this, LoginActivity.class);
+                startActivity(intentLogin);
+                return;
+            }
+
             MyPlant newMyPlant =  createMyPlant(currentPlant);
             Intent intentPlant = new Intent(PlantInfoActivity.this, MyPLantActivity.class);
             intentPlant.putExtra("MyPlant", newMyPlant);
@@ -98,10 +106,11 @@ public class PlantInfoActivity extends AppCompatActivity {
         newMyPlant.setArduinoName(null);
         newMyPlant.setStartdate(Calendar.getInstance().getTime());
         newMyPlant.setWaternotify(0);
+        newMyPlant.setStatus("OK");
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        mDatabase.child("users").child(mAuth.getUid()).push().child(newMyPlant.getName()).setValue(newMyPlant);
+        mDatabase.child("users").child(mAuth.getUid()).push().setValue(newMyPlant);
 
         return  newMyPlant;
     }
