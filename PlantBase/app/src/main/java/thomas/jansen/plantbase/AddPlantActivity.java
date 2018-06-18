@@ -55,7 +55,7 @@ public class AddPlantActivity extends AppCompatActivity {
             float minpH = Float.parseFloat(minpHText.getText().toString());
             int watering = Integer.parseInt(wateringText.getText().toString());
 
-            Plant newPlant = new Plant(name, nameLatin, maxTemp, maxpH, minTemp, minpH, watering);
+            Plant newPlant = new Plant(name, nameLatin, maxTemp, maxpH, minTemp, minpH, watering, null);
 
             System.out.println("Plant gemaak");
 

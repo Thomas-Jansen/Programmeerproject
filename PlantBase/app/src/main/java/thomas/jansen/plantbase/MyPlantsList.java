@@ -9,21 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-import static android.widget.Toast.LENGTH_LONG;
+import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
-public class MyPlantsList extends AppCompatActivity {
+public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.Callback{
 
     ArrayList<MyPlant> arrayListMyPlants = new ArrayList<>();
 
@@ -32,21 +26,38 @@ public class MyPlantsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_myplants);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
+
         if (mAuth.getCurrentUser() == null) {
             Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
             startActivity(intentLogin);
             return;
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(Objects.requireNonNull(mAuth.getUid()));
-        myRef.orderByChild("name").addValueEventListener(new myPlantListener());
+        RequestMyPlants requestMyPlants = new RequestMyPlants();
+        requestMyPlants.RequestMyPlants(this);
+
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
         navigation.getMenu().getItem(1).setChecked(true);
+    }
+
+    @Override
+    public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
+        this.arrayListMyPlants = arrayListMyPlants;
+        ListView listViewMyPlants = findViewById(R.id.listViewMyPlants);
+        myPlantsListAdapter adapterMyPlants = new myPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
+        listViewMyPlants.setAdapter(adapterMyPlants);
+        listViewMyPlants.setOnItemClickListener(new ListItemClickListener());
+    }
+
+    @Override
+    public void gotError(DatabaseError error) {
+
     }
 
     private class ListItemClickListener implements AdapterView.OnItemClickListener {
@@ -56,32 +67,6 @@ public class MyPlantsList extends AppCompatActivity {
             Intent intentMyPlant = new Intent(MyPlantsList.this, MyPLantActivity.class);
             intentMyPlant.putExtra("clickedMyPlant", clickedMyPlant);
             startActivity(intentMyPlant);
-        }
-    }
-
-    private void gotMyPlantsArraylist() {
-        ListView listViewMyPlants = findViewById(R.id.listViewMyPlants);
-        myPlantsListAdapter adapterMyPlants = new myPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
-        listViewMyPlants.setAdapter(adapterMyPlants);
-        listViewMyPlants.setOnItemClickListener(new ListItemClickListener());
-    }
-
-    private class myPlantListener implements ValueEventListener {
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                MyPlant myplant = child.getValue(MyPlant.class);
-                if (myplant != null) {
-                    System.out.println(myplant.getName());
-                    arrayListMyPlants.add(myplant);
-                }
-            }
-            gotMyPlantsArraylist();
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Toast.makeText(MyPlantsList.this, (CharSequence) databaseError, LENGTH_LONG).show();
         }
     }
 

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
-
+import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
 public class PlantInfoActivity extends AppCompatActivity {
 
@@ -27,6 +28,10 @@ public class PlantInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plantinfo);
+
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -55,6 +60,7 @@ public class PlantInfoActivity extends AppCompatActivity {
         TextView minTempView = findViewById(R.id.textViewMinTemp);
         TextView maxTempView = findViewById(R.id.textViewMaxTemp);
         TextView waterView = findViewById(R.id.textViewWater);
+        ImageView imageViewPlant = findViewById(R.id.imageViewPlant);
 
         String name = plant.getName();
         String nameLatin = plant.getLatinName();
@@ -63,6 +69,8 @@ public class PlantInfoActivity extends AppCompatActivity {
         int minTemp = (int) plant.getMinTemp();
         int maxTemp = (int) plant.getMaxTemp();
         int water = (int) plant.getWatering();
+        String imageName= plant.getImageID();
+        int imageId = getResources().getIdentifier(imageName , "drawable", getPackageName());
 
         nameView.setText(name);
         nameLatinView.setText(nameLatin);
@@ -71,6 +79,7 @@ public class PlantInfoActivity extends AppCompatActivity {
         minTempView.setText("Min Temp: "+minTemp+" \u2103");
         maxTempView.setText("Max Temp: "+maxTemp+" \u2103");
         waterView.setText("Watering level: "+water);
+        imageViewPlant.setImageResource(imageId);
     }
 
     private class addToCollectionOnClickListener implements View.OnClickListener {
@@ -107,9 +116,10 @@ public class PlantInfoActivity extends AppCompatActivity {
         newMyPlant.setStartdate(Calendar.getInstance().getTime());
         newMyPlant.setWaternotify(0);
         newMyPlant.setStatus("OK");
+        newMyPlant.setImageID(plant.getImageID());
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
         mDatabase.child("users").child(mAuth.getUid()).push().setValue(newMyPlant);
 
         return  newMyPlant;

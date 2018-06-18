@@ -43,31 +43,86 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imageViewMyPlant"
-                            android:layout_width="match_parent"
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_launcher_background" />
+                            android:layout_weight="1">
 
-                        <TextView
-                            android:id="@+id/textViewMyPlantName"
+                            <ImageView
+                                android:id="@+id/imageViewMyPlant"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/ic_launcher_background" />
+
+                            <ImageButton
+                                android:id="@+id/imageButtonAddPhoto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+                                android:backgroundTint="#55FFFFFF"
+                                app:srcCompat="@drawable/baseline_add_a_photo_black_18dp" />
+
+                        </RelativeLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Name"
-                            android:textAlignment="center"
+                            android:layout_gravity="top"
+                            android:layout_margin="8dp"
+                            android:layout_weight="10"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:orientation="vertical">
+
+                            <EditText
+                                android:id="@+id/editTextMyPlantName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:fontFamily="@font/quicksand_regular"
+                                android:imeOptions="actionDone"
+                                android:inputType="textPersonName"
+                                android:text="Name"
+                                android:textAlignment="center"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textViewMyPlantDay"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Day: " />
+
+                            <TextView
+                                android:id="@+id/textViewMyPlantStartDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Start Date: 1-6-2018" />
+
+                            <TextView
+                                android:id="@+id/textViewMyPlantStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Status: OK!" />
+
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/buttonMyPlantDied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+                            android:fontFamily="@font/quicksand_regular"
+                            android:text="This plant died"
+                            android:textAllCaps="false"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/textViewMyPlantStatus"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Status: OK!" />
-
-                        <TextView
-                            android:id="@+id/textViewMyPlantStartDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Start Date: 1-6-2018" />
 
                     </LinearLayout>
 
@@ -90,18 +145,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Never" />
-
-                            </TableRow>
-
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <CheckBox
-                                    android:id="@+id/checkBoxArduino"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Use Arduino" />
 
                             </TableRow>
 
@@ -140,6 +183,18 @@
                                     android:text="Weekly" />
 
                             </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <CheckBox
+                                    android:id="@+id/checkBoxArduino"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Use Arduino" />
+
+                            </TableRow>
                         </TableLayout>
 
                     </LinearLayout>
@@ -155,6 +210,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/line_graph" />
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="TextView" />
 
                     </LinearLayout>
                 </FrameLayout>

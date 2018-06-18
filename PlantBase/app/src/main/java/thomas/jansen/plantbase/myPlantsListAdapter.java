@@ -36,11 +36,15 @@ class myPlantsListAdapter extends ArrayAdapter<MyPlant> {
         ImageView imageView = convertView.findViewById(R.id.imageViewMPFoto);
         ImageView statusImageView = convertView.findViewById(R.id.imageViewMPConnected);
 
+        String imageName= myplant.getImageID();
+        int imageId = context.getResources().getIdentifier(imageName , "drawable", context.getPackageName());
+
         nameView.setText(myplant.getName());
-        statusView.setText(myplant.getStatus());
+        statusView.setText("Status: "+myplant.getStatus());
         if (!myplant.isConnected()) {
             statusImageView.setVisibility(View.GONE);
         }
+        imageView.setImageResource(imageId);
 
         return convertView;
     }

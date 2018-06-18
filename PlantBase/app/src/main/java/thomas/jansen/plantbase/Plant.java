@@ -11,10 +11,11 @@ public class Plant implements Serializable{
     private float minTemp;
     private float minpH;
     private float watering;
+    private String imageID;
 
     public Plant() {}
 
-    public Plant(String name, String latinName, float maxTemp, float maxpH, float minTemp, float minpH, float watering) {
+    public Plant(String name, String latinName, float maxTemp, float maxpH, float minTemp, float minpH, float watering, String imageID) {
         this.name = name;
         this.latinName = latinName;
         this.maxTemp = maxTemp;
@@ -22,6 +23,15 @@ public class Plant implements Serializable{
         this.minTemp = minTemp;
         this.minpH = minpH;
         this.watering = watering;
+        this.imageID = imageID;
+    }
+
+    public String getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(String imageID) {
+        this.imageID = imageID;
     }
 
     public String getName() {

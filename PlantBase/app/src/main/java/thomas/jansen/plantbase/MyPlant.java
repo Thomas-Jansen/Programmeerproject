@@ -1,6 +1,7 @@
 package thomas.jansen.plantbase;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Date;
 
 public class MyPlant implements Serializable{
@@ -18,11 +19,13 @@ public class MyPlant implements Serializable{
     private boolean connected;
     private String arduinoName;
     private int waternotify;
+    private String imageID;
+    private URL addedImage;
 
     public MyPlant(){}
 
     public MyPlant(String name, String latinName, String status, float maxTemp, float maxpH, float minTemp, float minpH,
-                   float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify) {
+                   float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID) {
         this.name = name;
         this.latinName = latinName;
         this.status = status;
@@ -36,6 +39,16 @@ public class MyPlant implements Serializable{
         this.connected = connected;
         this.arduinoName = arduinoName;
         this.waternotify = waternotify;
+        this.imageID = imageID;
+
+    }
+
+    public String getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(String imageID) {
+        this.imageID = imageID;
     }
 
     public String getStatus() {

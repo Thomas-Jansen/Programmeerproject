@@ -30,11 +30,17 @@ class plantsListAdapter extends ArrayAdapter<Plant> {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_plant_info, parent, false);
         }
 
+
         Plant plant = arrayListPlant.get(position);
+
+        String imageName= plant.getImageID();
+        int imageId = context.getResources().getIdentifier(imageName , "drawable", context.getPackageName());
+
         TextView nameView = convertView.findViewById(R.id.textViewItemPlantName);
         ImageView imageView = convertView.findViewById(R.id.imageViewItemFoto);
 
         nameView.setText(plant.getName());
+        imageView.setImageResource(imageId);
 
         return convertView;
     }
