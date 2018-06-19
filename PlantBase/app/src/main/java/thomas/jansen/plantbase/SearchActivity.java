@@ -12,20 +12,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import static android.widget.Toast.LENGTH_LONG;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements RequestPlants.Callback{
 
-    private FirebaseDatabase database;
-    ArrayList<Plant> arrayListPlants = new ArrayList<>();
+    ArrayList<Plant> arrayListPlants;
     ArrayList<String> arrayListPlantNames = new ArrayList<>();
 
     @Override
@@ -48,9 +43,18 @@ public class SearchActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new addonClickListener());
 
 
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("plantsdata");
-        myRef.orderByChild("name").addValueEventListener(new plantListener());
+        RequestPlants requestPlants =  new RequestPlants();
+        requestPlants.RequestPlants(this);
+    }
+
+    @Override
+    public void gotPlantsArray(ArrayList<Plant> arrayListPlant) {
+        arrayListPlants = arrayListPlant;
+    }
+
+    @Override
+    public void gotError(DatabaseError error) {
+        Toast.makeText(SearchActivity.this, (CharSequence) error, LENGTH_LONG).show();
     }
 
     private class addonClickListener implements View.OnClickListener {
@@ -58,24 +62,6 @@ public class SearchActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intentAdd = new Intent(SearchActivity.this, AddPlantActivity.class);
             startActivity(intentAdd);
-        }
-    }
-
-    private class plantListener implements ValueEventListener {
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                Plant plant = child.getValue(Plant.class);
-                if (plant != null) {
-                    arrayListPlants.add(plant);
-                    arrayListPlantNames.add(plant.getName());
-                }
-            }
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Toast.makeText(SearchActivity.this, (CharSequence) databaseError, LENGTH_LONG).show();
         }
     }
 
@@ -103,23 +89,9 @@ public class SearchActivity extends AppCompatActivity {
     private class browseonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            DatabaseReference myRef = database.getReference("plantsdata");
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    System.out.println(snapshot.getValue());
-
-                    if (snapshot.getValue() != null) {
-                        Intent intentSearchList = new Intent(SearchActivity.this, SearchList.class);
-                        intentSearchList.putExtra("plantsList", arrayListPlants);
-                        startActivity(intentSearchList);
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("No data");
-                }
-            });
+            Intent intentSearchList = new Intent(SearchActivity.this, SearchList.class);
+            intentSearchList.putExtra("plantsList", arrayListPlants);
+            startActivity(intentSearchList);
         }
     }
 

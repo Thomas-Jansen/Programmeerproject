@@ -36,7 +36,6 @@ public class RequestMyPlants {
             for (DataSnapshot child : dataSnapshot.getChildren()) {
                 MyPlant myplant = child.getValue(MyPlant.class);
                 if (myplant != null) {
-                    System.out.println(myplant.getName());
                     arrayListMyPlants.add(myplant);
                 }
             }
@@ -48,5 +47,4 @@ public class RequestMyPlants {
         }
 
     }
-
 }

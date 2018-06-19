@@ -56,15 +56,16 @@
 
                             <ImageButton
                                 android:id="@+id/imageButtonAddPhoto"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginRight="8dp"
                                 android:layout_marginTop="8dp"
                                 android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
                                 android:backgroundTint="#55FFFFFF"
-                                app:srcCompat="@drawable/baseline_add_a_photo_black_18dp" />
+                                android:scaleType="centerCrop"
+                                app:srcCompat="@drawable/baseline_add_a_photo_black_24dp" />
 
                         </RelativeLayout>
 
@@ -95,7 +96,7 @@
                                 android:id="@+id/textViewMyPlantDay"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Day: " />
+                                android:text="Days: " />
 
                             <TextView
                                 android:id="@+id/textViewMyPlantStartDate"
@@ -109,20 +110,47 @@
                                 android:layout_height="wrap_content"
                                 android:text="Status: OK!" />
 
+                            <TextView
+                                android:id="@+id/textViewMPConnectedTo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Connected: " />
+
 
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/buttonMyPlantDied"
-                            android:layout_width="wrap_content"
-                            android:layout_height="35dp"
-                            android:layout_gravity="bottom|center_horizontal"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
                             android:layout_weight="0.1"
-                            android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
-                            android:fontFamily="@font/quicksand_regular"
-                            android:text="This plant died"
-                            android:textAllCaps="false"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/buttonMyPlantDied"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_weight="1"
+                                android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
+                                android:fontFamily="@font/quicksand_regular"
+                                android:text="This plant died"
+                                android:textAllCaps="false"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/buttonRemoveMyPlant"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_weight="1"
+                                android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
+                                android:fontFamily="@font/quicksand_regular"
+                                android:text="Remove this plant"
+                                android:textAllCaps="false"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                     </LinearLayout>
 

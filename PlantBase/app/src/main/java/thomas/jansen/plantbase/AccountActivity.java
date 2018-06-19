@@ -9,13 +9,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 
-public class AccountActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Objects;
+
+import static android.widget.Toast.LENGTH_LONG;
+
+public class AccountActivity extends AppCompatActivity implements RequestMyPlants.Callback{
 
     static FirebaseAuth mAuth;
+    int myGrowingPlantsNumber = 0;
+    int myDeceasedPlantsNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +38,17 @@ public class AccountActivity extends AppCompatActivity {
         }
         FirebaseUser currentUser = mAuth.getCurrentUser();
         TextView nameTextView = findViewById(R.id.textViewAccountName);
-        nameTextView.setText(currentUser.getEmail());
+        assert currentUser != null;
+        if (Objects.equals(currentUser.getDisplayName(), "")) {
+            nameTextView.setText(currentUser.getEmail());
+        } else {
+            nameTextView.setText(currentUser.getDisplayName());
+        }
+
+        RequestMyPlants requestMyPlants = new RequestMyPlants();
+        requestMyPlants.RequestMyPlants(this);
+
+
 
         Button buttonLogout = findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(new logoutOnClickListener());
@@ -47,6 +66,36 @@ public class AccountActivity extends AppCompatActivity {
             Intent intentLogin = new Intent(AccountActivity.this, LoginActivity.class);
             startActivity(intentLogin);
         }
+    }
+
+    @Override
+    public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
+        for (MyPlant myPlant: arrayListMyPlants) {
+            if (myPlant.isAlive()) {
+                myGrowingPlantsNumber += 1;
+            } else {
+                myDeceasedPlantsNumber += 1;
+            }
+        }
+        TextView textViewGrowingPlants = findViewById(R.id.textViewGrowingPlants);
+        if (myGrowingPlantsNumber == 1) {
+            textViewGrowingPlants.setText("You are growing " + myGrowingPlantsNumber + " plant");
+        } else {
+            textViewGrowingPlants.setText("You are growing " + myGrowingPlantsNumber + " plants");
+        }
+        TextView textViewDeceasedPlants = findViewById(R.id.textViewDeadPlants);
+        if (myDeceasedPlantsNumber == 1) {
+            textViewDeceasedPlants.setText(myDeceasedPlantsNumber+ " plant died");
+        } else {
+            textViewDeceasedPlants.setText(myDeceasedPlantsNumber+ " plants died");
+        }
+
+
+    }
+
+    @Override
+    public void gotError(DatabaseError error) {
+        Toast.makeText(AccountActivity.this, (CharSequence) error, LENGTH_LONG).show();
     }
 
     private class mOnNavigationItemSelectedListener

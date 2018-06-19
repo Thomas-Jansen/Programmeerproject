@@ -13,6 +13,32 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="Select a plant and than a PlantNode to link them together  Longpress a plant to remove the link"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/listViewMPLink"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></ListView>
+
+            <ListView
+                android:id="@+id/listViewPlantNodes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></ListView>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

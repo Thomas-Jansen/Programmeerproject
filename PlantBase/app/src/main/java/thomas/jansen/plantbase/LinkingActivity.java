@@ -6,8 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
 public class LinkingActivity extends AppCompatActivity {
 
@@ -16,11 +19,17 @@ public class LinkingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_linking);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
+
         if (mAuth.getCurrentUser() == null) {
             Intent intentLogin = new Intent(LinkingActivity.this, LoginActivity.class);
             startActivity(intentLogin);
         }
+
+        ListView plantsLinkView = findViewById(R.id.listViewMPLink);
+        ListView plantNodeView = findViewById(R.id.listViewPlantNodes);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);

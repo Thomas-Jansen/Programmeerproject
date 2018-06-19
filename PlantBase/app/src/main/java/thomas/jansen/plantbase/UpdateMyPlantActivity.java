@@ -31,7 +31,7 @@ public class UpdateMyPlantActivity {
         this.myPlant = myPlant;
         this.database = FirebaseDatabase.getInstance();
         this.myRef = database.getReference("users").child(Objects.requireNonNull(mAuth.getUid()));
-        myRef.orderByChild("name").addValueEventListener(new myPlantListener());
+        myRef.orderByChild("name").addListenerForSingleValueEvent(new myPlantListener());
     }
 
     private class myPlantListener implements ValueEventListener {
@@ -49,6 +49,37 @@ public class UpdateMyPlantActivity {
                 }
             }
         }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Toast.makeText(context, (CharSequence) databaseError, LENGTH_LONG).show();
+        }
+    }
+
+    public void RemoveMyPlantActivity() {
+        myRef.orderByChild("name").addListenerForSingleValueEvent(new myPlantRemoveListener());
+    }
+
+
+    private class myPlantRemoveListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                MyPlant myplant = child.getValue(MyPlant.class);
+                if (myplant != null) {
+                    System.out.println(myplant.getName());
+                    if (myplant.getStartdate().compareTo(myPlant.getStartdate()) == 0) {
+                        myRef.child(child.getKey()).setValue(null);
+                        System.out.println("Deleted");
+
+
+
+                    }
+                }
+            }
+        }
+
         @Override
         public void onCancelled(DatabaseError databaseError) {
             Toast.makeText(context, (CharSequence) databaseError, LENGTH_LONG).show();
