@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,7 +52,8 @@ public class MyPLantActivity extends AppCompatActivity {
     int waternotify = 0;
     EditText nameView;
     Button buttonPlantDied;
-    ImageView imageView;
+    ImageView imageViewMyPlant;
+    LinearLayout photosLayout;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -83,10 +87,11 @@ public class MyPLantActivity extends AppCompatActivity {
             myPlant = (MyPlant) intent.getSerializableExtra("MyPlant");
         }
 
-        imageView = findViewById(R.id.imageViewMyPlant);
+        imageViewMyPlant = findViewById(R.id.imageViewMyPlant);
         nameView = findViewById(R.id.editTextMyPlantName);
         nameView.setSelected(false);
         buttonPlantDied = findViewById(R.id.buttonMyPlantDied);
+        photosLayout = findViewById(R.id.linearPhotos);
         setViews(myPlant);
 
         TabHost host = findViewById(R.id.tabHost);
@@ -172,10 +177,6 @@ public class MyPLantActivity extends AppCompatActivity {
         }
     }
 
-    private class removeMyPlant {
-
-    }
-
     private class nameEditListener implements EditText.OnEditorActionListener {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -193,8 +194,33 @@ public class MyPLantActivity extends AppCompatActivity {
     private class addPhotoOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(takePicture, 0);//zero can be replaced with any action code
+            new AlertDialog.Builder(MyPLantActivity.this)
+                    .setTitle("Add a picture of "+myPlant.getName())
+                    .setMessage("Take a picture or choose an existing one")
+                    .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            dialogInterface.cancel();
+                        }
+                    })
+                    .setPositiveButton("Choose from gallery", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
+                        }
+                    })
+                    .setNegativeButton("Take a photo", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(takePicture, 0);//zero can be replaced with any action code
+                        }
+                    })
+                    .create()
+                    .show();
+
         }
     }
 
@@ -203,19 +229,20 @@ public class MyPLantActivity extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    ImageView photoView = findViewById(R.id.imageView3);
-                    System.out.println(selectedImage);
-                    photoView.setImageURI(selectedImage);
-//                    new StorageClass(selectedImage, "LFN3fALfCXFbDlBlqaM");
-//                    imageView.setImageURI(selectedImage);
+                    Bitmap takenimage = (Bitmap) imageReturnedIntent.getExtras().get("data");
+
+                    StorageClass storageClass = new StorageClass(this, myPlant);
+                    ImageView imageView = findViewById(R.id.imageView3);
+                    imageView.setImageBitmap(takenimage);
+//                    storageClass.StoreImage(selectedImage);
                 }
 
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    imageView.setImageURI(selectedImage);
+                    StorageClass storageClass =  new StorageClass(this, myPlant);
+                    storageClass.StoreImage(selectedImage);
                 }
                 break;
         }
@@ -266,7 +293,7 @@ public class MyPLantActivity extends AppCompatActivity {
         dayView.setText("Days: "+(int)((currentDate.getTime()/(24*60*60*1000))-(int)(sinceDate.getTime()/(24*60*60*1000))));
         String imageName= myPlant.getImageID();
         int imageId = getResources().getIdentifier(imageName , "drawable", getPackageName());
-        imageView.setImageResource(imageId);
+        imageViewMyPlant.setImageResource(imageId);
 
         textViewConnected.setText("Connected: "+myPlant.isConnected());
 
@@ -305,6 +332,16 @@ public class MyPLantActivity extends AppCompatActivity {
                 break;
         }
 
+        try {
+            Uri photos = new StorageClass(this, myPlant).GetStoragePhoto();
+            for (x = 0; x < 4; x++) {
+                ImageView image = new ImageView(MyPLantActivity.this);
+                image.setImageURI(photos);
+                photosLayout.addView(image);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void switchTabs(boolean direction) {
