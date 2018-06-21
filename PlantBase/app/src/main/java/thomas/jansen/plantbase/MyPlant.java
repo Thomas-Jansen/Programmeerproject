@@ -1,7 +1,7 @@
 package thomas.jansen.plantbase;
 
 import java.io.Serializable;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MyPlant implements Serializable{
@@ -20,12 +20,14 @@ public class MyPlant implements Serializable{
     private String arduinoName;
     private int waternotify;
     private String imageID;
-    private URL addedImage;
+    private ArrayList<String> addedImages;
+    private String avatarImage;
+    private Date lastwatered;
 
     public MyPlant(){}
 
     public MyPlant(String name, String latinName, String status, float maxTemp, float maxpH, float minTemp, float minpH,
-                   float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID) {
+                   float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID, ArrayList<String> addedImages, String avatarImage, Date lastwatered) {
         this.name = name;
         this.latinName = latinName;
         this.status = status;
@@ -40,7 +42,35 @@ public class MyPlant implements Serializable{
         this.arduinoName = arduinoName;
         this.waternotify = waternotify;
         this.imageID = imageID;
+        this.addedImages = addedImages;
 
+
+        this.avatarImage = avatarImage;
+        this.lastwatered = lastwatered;
+    }
+
+    public Date getLastwatered() {
+        return lastwatered;
+    }
+
+    public void setLastwatered(Date lastwatered) {
+        this.lastwatered = lastwatered;
+    }
+
+    public String getAvatarImage() {
+        return avatarImage;
+    }
+
+    public void setAvatarImage(String avatarImage) {
+        this.avatarImage = avatarImage;
+    }
+
+    public ArrayList<String> getAddedImages() {
+        return addedImages;
+    }
+
+    public void setAddedImages(ArrayList<String> addedImages) {
+        this.addedImages = addedImages;
     }
 
     public String getImageID() {

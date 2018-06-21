@@ -37,6 +37,8 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
             return;
         }
 
+        new NotificationManager(this);
+
         arrayListMyPlants.clear();
 
 
@@ -50,31 +52,31 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
         navigation.getMenu().getItem(1).setChecked(true);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setContentView(R.layout.list_myplants);
-
-        if (mAuth == null) {
-            mAuth = FirebaseAuth.getInstance();
-        }
-
-        if (mAuth.getCurrentUser() == null) {
-            Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
-            startActivity(intentLogin);
-            return;
-        }
-
-        arrayListMyPlants.clear();
-        RequestMyPlants requestMyPlants = new RequestMyPlants();
-        requestMyPlants.RequestMyPlants(this);
-
-
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        BottomNavigationViewHelper.disableShiftMode(navigation);
-        navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
-        navigation.getMenu().getItem(1).setChecked(true);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        setContentView(R.layout.list_myplants);
+//
+//        if (mAuth == null) {
+//            mAuth = FirebaseAuth.getInstance();
+//        }
+//
+//        if (mAuth.getCurrentUser() == null) {
+//            Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
+//            startActivity(intentLogin);
+//            return;
+//        }
+//
+//        arrayListMyPlants.clear();
+//        RequestMyPlants requestMyPlants = new RequestMyPlants();
+//        requestMyPlants.RequestMyPlants(this);
+//
+//
+//        BottomNavigationView navigation = findViewById(R.id.navigation);
+//        BottomNavigationViewHelper.disableShiftMode(navigation);
+//        navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
+//        navigation.getMenu().getItem(1).setChecked(true);
+//    }
 
     @Override
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {

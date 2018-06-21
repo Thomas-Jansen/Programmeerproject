@@ -2,6 +2,7 @@ package thomas.jansen.plantbase;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import static thomas.jansen.plantbase.AccountActivity.mAuth;
@@ -117,6 +119,14 @@ public class PlantInfoActivity extends AppCompatActivity {
         newMyPlant.setWaternotify(0);
         newMyPlant.setStatus("OK");
         newMyPlant.setImageID(plant.getImageID());
+        newMyPlant.setArduinoName("none");
+        newMyPlant.setAvatarImage("none");
+        newMyPlant.setLastwatered(Calendar.getInstance().getTime());
+
+        ArrayList<String> addedImages = new ArrayList<>();
+        Uri imageUri = Uri.parse("android.resource://thomas.jansen.plantbase/drawable/" +plant.getName().toLowerCase()+"_stock");
+        addedImages.add(String.valueOf(imageUri));
+        newMyPlant.setAddedImages(addedImages);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 

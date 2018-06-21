@@ -28,6 +28,8 @@ public class SearchActivity extends AppCompatActivity implements RequestPlants.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);

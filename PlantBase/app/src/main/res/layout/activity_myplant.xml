@@ -152,6 +152,7 @@
                                 android:fontFamily="@font/quicksand_regular"
                                 android:text="This plant died"
                                 android:textAllCaps="false"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
 
                             <Button
@@ -162,8 +163,22 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
                                 android:fontFamily="@font/quicksand_regular"
-                                android:text="Remove this plant"
+                                android:text="Remove plant"
                                 android:textAllCaps="false"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/buttonWatered"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_weight="1"
+                                android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
+                                android:fontFamily="@font/quicksand_regular"
+                                android:text="Got water"
+                                android:textAllCaps="false"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -248,17 +263,27 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imageView3"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/line_graph" />
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="TextView" />
+                            <TextView
+                                android:id="@+id/textViewNotConnected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|center_horizontal"
+                                android:layout_marginTop="150dp"
+                                android:fontFamily="@font/quicksand_regular"
+                                android:text="TextView"
+                                android:textAlignment="center"
+                                android:textSize="18sp" />
+
+                            <com.jjoe64.graphview.GraphView
+                                android:id="@+id/graph"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                        </RelativeLayout>
 
                     </LinearLayout>
                 </FrameLayout>

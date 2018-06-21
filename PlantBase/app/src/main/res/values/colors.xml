@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#286c35</color>
-    <color name="colorPrimaryDark">#13410f</color>
-    <color name="colorAccent">#308d21</color>
-    <color name="color_darkgrey">#363738</color>
+    <color name="colorPrimary">#5DA399</color>
+    <color name="colorPrimaryDark">#397367</color>
+    <color name="colorAccent">#63CCCA</color>
+    <color name="color_darkgrey">#35393C</color>
+
+    <color name="color_blue_jeans">#5BC0EB</color>
+    <color name="color_gargoyle_gas">#FDE74C</color>
+    <color name="color_android_green">#9BC53D</color>
+    <color name="color_english_vermillion">#C3423F</color>
+
+    <color name="color_light_grey">#aeb1b7</color>
+    <color name="color_none">#00ffffff</color>
 </resources>

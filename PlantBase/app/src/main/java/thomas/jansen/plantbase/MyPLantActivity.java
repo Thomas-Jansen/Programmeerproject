@@ -2,9 +2,11 @@ package thomas.jansen.plantbase;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,21 +25,34 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-public class MyPLantActivity extends AppCompatActivity {
+import static android.widget.Toast.LENGTH_LONG;
+
+public class MyPLantActivity extends AppCompatActivity implements StorageClass.Callback, RequestPlantNode.Callback{
 
     TabHost tabHost;
     CheckBox checkBoxNever;
@@ -133,19 +148,37 @@ public class MyPLantActivity extends AppCompatActivity {
         buttonPlantDied.setOnClickListener(new plantDiedOnClickListener());
         Button buttonRemovePlant = findViewById(R.id.buttonRemoveMyPlant);
         buttonRemovePlant.setOnClickListener(new removeOnClickListener());
+
+        Button plantWatered = findViewById(R.id.buttonWatered);
+        plantWatered.setOnClickListener(new wateredOnClickListener());
     }
 
     private class plantDiedOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Button diedButton = findViewById(v.getId());
             if (myPlant.isAlive()) {
                 myPlant.setAlive(false);
                 myPlant.setStatus("Deceased");
                 myPlant.setWaternotify(0);
+                diedButton.setText("I revived this plant");
             } else {
                 myPlant.setAlive(true);
                 myPlant.setStatus("OK");
+                diedButton.setText("This plant died");
             }
+            new UpdateMyPlantActivity(myPlant, getApplicationContext());
+            setViews(myPlant);
+        }
+    }
+
+    private class wateredOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Date now = Calendar.getInstance().getTime();
+            myPlant.setLastwatered(now);
+            myPlant.setStatus("OK");
             new UpdateMyPlantActivity(myPlant, getApplicationContext());
             setViews(myPlant);
         }
@@ -230,22 +263,41 @@ public class MyPLantActivity extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK){
                     Bitmap takenimage = (Bitmap) imageReturnedIntent.getExtras().get("data");
-
-                    StorageClass storageClass = new StorageClass(this, myPlant);
-                    ImageView imageView = findViewById(R.id.imageView3);
-                    imageView.setImageBitmap(takenimage);
-//                    storageClass.StoreImage(selectedImage);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    takenimage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] newPhoto =  baos.toByteArray();
+                    StorageClass storageClass = new StorageClass(this, myPlant, this);
+                    storageClass.StoreImage(newPhoto);
                 }
-
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    StorageClass storageClass =  new StorageClass(this, myPlant);
-                    storageClass.StoreImage(selectedImage);
+                    Uri imageReturned = imageReturnedIntent.getData();
+                    byte[] photo = null;
+                    try {
+                        ContentResolver cr = getBaseContext().getContentResolver();
+                        InputStream inputStream = cr.openInputStream(imageReturned);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        photo = baos.toByteArray();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    StorageClass storageClass =  new StorageClass(this, myPlant, this);
+                    storageClass.StoreImage(photo);
                 }
                 break;
         }
+    }
+
+    @Override
+    public void gotPhotoUri(Uri addedPhoto) {
+        ArrayList<String> uriArrayList = myPlant.getAddedImages();
+        uriArrayList.add(String.valueOf(addedPhoto));
+        myPlant.setAddedImages(uriArrayList);
+        new UpdateMyPlantActivity(myPlant, this);
+        setViews(myPlant);
     }
 
     private class checkBoxOnClickListener implements View.OnClickListener {
@@ -293,7 +345,14 @@ public class MyPLantActivity extends AppCompatActivity {
         dayView.setText("Days: "+(int)((currentDate.getTime()/(24*60*60*1000))-(int)(sinceDate.getTime()/(24*60*60*1000))));
         String imageName= myPlant.getImageID();
         int imageId = getResources().getIdentifier(imageName , "drawable", getPackageName());
-        imageViewMyPlant.setImageResource(imageId);
+
+        if (myPlant.getAvatarImage().equals("none")) {
+            imageViewMyPlant.setImageResource(imageId);
+        } else {
+            Picasso.with(this)
+                    .load(Uri.parse(myPlant.getAvatarImage()))
+                    .into(imageViewMyPlant);
+        }
 
         textViewConnected.setText("Connected: "+myPlant.isConnected());
 
@@ -332,17 +391,145 @@ public class MyPLantActivity extends AppCompatActivity {
                 break;
         }
 
-        try {
-            Uri photos = new StorageClass(this, myPlant).GetStoragePhoto();
-            for (x = 0; x < 4; x++) {
-                ImageView image = new ImageView(MyPLantActivity.this);
-                image.setImageURI(photos);
-                photosLayout.addView(image);
+        photosLayout.removeAllViews();
+        if (myPlant.getAddedImages() != null) {
+            ArrayList<String> addedPhotos = myPlant.getAddedImages();
+            for (x = 0; x < addedPhotos.size(); x++) {
+                Uri photoUri = Uri.parse(addedPhotos.get(x));
+                ImageView photoView = new ImageView(MyPLantActivity.this);
+                photoView.setLayoutParams(new android.view.ViewGroup.LayoutParams(400,400));
+                photoView.setMaxHeight(400);
+                photoView.setMaxWidth(400);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(photoView.getLayoutParams());
+                lp.setMargins(10, 10, 10, 10);
+                photoView.setLayoutParams(lp);
+
+                if (x == 0) {
+                    photoView.setImageURI(photoUri);
+                    photoView.setTag("none");
+                } else {
+                    Picasso.with(this)
+                            .load(photoUri)
+                            .into(photoView);
+                    photoView.setTag(addedPhotos.get(x));
+                    photoView.setOnLongClickListener(new deleteOnLongClickListener());
+                }
+
+                photoView.setOnClickListener(new onPhotoClickListener());
+                photosLayout.addView(photoView);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+
+        if (myPlant.isConnected()) {
+            TextView textViewNotConnected = findViewById(R.id.textViewNotConnected);
+            textViewNotConnected.setVisibility(View.INVISIBLE);
+            new RequestPlantNode().RequestPlantNodeData(this, "PlantNode_01");
+        } else {
+            GraphView graphView = findViewById(R.id.graph);
+            graphView.setVisibility(View.INVISIBLE);
+            TextView textViewNotConnected = findViewById(R.id.textViewNotConnected);
+            textViewNotConnected.setText(myPlant.getName()+" is not connected to a PlantNode");
         }
     }
+
+    private class onPhotoClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            myPlant.setAvatarImage((String) v.getTag());
+            new UpdateMyPlantActivity(myPlant, getApplicationContext());
+            setViews(myPlant);
+        }
+    }
+
+    private class deleteOnLongClickListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(final View v) {
+            new AlertDialog.Builder(MyPLantActivity.this)
+                    .setTitle("Remove photo")
+                    .setMessage("Are you certain you want to remove this photo?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String imageUri = (String) v.getTag();
+                            new StorageClass(getApplicationContext(), myPlant,
+                                    MyPLantActivity.this).DeleteStoredPhoto(Uri.parse(imageUri));
+                            ArrayList<String> addedImages = myPlant.getAddedImages();
+                            for (int x = 0; x < addedImages.size(); x++) {
+                                if (imageUri.equals(addedImages.get(x))) {
+                                    addedImages.remove(x);
+                                }
+                            }
+                            myPlant.setAddedImages(addedImages);
+                            if (myPlant.getAvatarImage().equals(imageUri)) {
+                                myPlant.setAvatarImage("none");
+                            }
+                            new UpdateMyPlantActivity(myPlant, getApplicationContext());
+                            setViews(myPlant);
+                        }
+
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .create()
+                    .show();
+            return false;
+        }
+    }
+
+    @Override
+    public void gotPlantNodeData(DataPoint[] dataPointsTemp, DataPoint[] dataPointsHum, DataPoint[] dataPointsMoist, DataPoint[] dataPointsLight) {
+
+        LineGraphSeries<DataPoint> seriesTemp = new LineGraphSeries<>(dataPointsTemp);
+        LineGraphSeries<DataPoint> seriesHum = new LineGraphSeries<>(dataPointsHum);
+        LineGraphSeries<DataPoint> seriesMoist = new LineGraphSeries<>(dataPointsMoist);
+        LineGraphSeries<DataPoint> seriesLight = new LineGraphSeries<>(dataPointsLight);
+
+        seriesTemp.setColor(getResources().getColor(R.color.color_english_vermillion));
+        seriesTemp.setTitle("Temperature \u2103");
+        seriesHum.setColor(getResources().getColor(R.color.color_blue_jeans));
+        seriesHum.setTitle("Relative Humidity %");
+        seriesMoist.setColor(getResources().getColor(R.color.color_android_green));
+        seriesMoist.setTitle("Soil Moisture %");
+        seriesLight.setColor(getResources().getColor(R.color.color_gargoyle_gas));
+        seriesLight.setTitle("Light %");
+
+        GraphView graph = findViewById(R.id.graph);
+        graph.setVisibility(View.VISIBLE);
+
+        graph.getGridLabelRenderer().setNumHorizontalLabels(0);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(100);
+
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(dataPointsTemp.length);
+
+        // enable scaling and scrolling
+        graph.getViewport().setScalable(true);
+//        graph.getViewport().setScalableY(true);
+
+        graph.addSeries(seriesTemp);
+        graph.addSeries(seriesHum);
+        graph.addSeries(seriesMoist);
+        graph.addSeries(seriesLight);
+
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+    }
+
+    @Override
+    public void gotError(DatabaseError error) {
+        Toast.makeText(this, (CharSequence) error, LENGTH_LONG).show();
+    }
+
+    @Override
+    public void gotLastPlantNodeData(int[] lastData, MyPlant myPlant) {}
 
     public void switchTabs(boolean direction) {
         if (direction) {

@@ -30,7 +30,6 @@ public class RequestMyPlants {
 
     private class myPlantListener implements ValueEventListener {
 
-
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot child : dataSnapshot.getChildren()) {
