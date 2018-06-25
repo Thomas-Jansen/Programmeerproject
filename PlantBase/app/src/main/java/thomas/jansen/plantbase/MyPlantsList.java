@@ -14,12 +14,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
 public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.Callback{
 
     ArrayList<MyPlant> arrayListMyPlants = new ArrayList<>();
+    ListView listViewMyPlants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,9 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
             return;
         }
 
-        new NotificationManager(this);
-
+        listViewMyPlants = findViewById(R.id.listViewMyPlants);
         arrayListMyPlants.clear();
+        listViewMyPlants.setAdapter(null);
 
 
         RequestMyPlants requestMyPlants = new RequestMyPlants();
@@ -52,36 +54,38 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
         navigation.getMenu().getItem(1).setChecked(true);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        setContentView(R.layout.list_myplants);
-//
-//        if (mAuth == null) {
-//            mAuth = FirebaseAuth.getInstance();
-//        }
-//
-//        if (mAuth.getCurrentUser() == null) {
-//            Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
-//            startActivity(intentLogin);
-//            return;
-//        }
-//
-//        arrayListMyPlants.clear();
-//        RequestMyPlants requestMyPlants = new RequestMyPlants();
-//        requestMyPlants.RequestMyPlants(this);
-//
-//
-//        BottomNavigationView navigation = findViewById(R.id.navigation);
-//        BottomNavigationViewHelper.disableShiftMode(navigation);
-//        navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
-//        navigation.getMenu().getItem(1).setChecked(true);
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
+
+        if (mAuth.getCurrentUser() == null) {
+            Intent intentLogin = new Intent(MyPlantsList.this, LoginActivity.class);
+            startActivity(intentLogin);
+            return;
+        }
+
+        listViewMyPlants = findViewById(R.id.listViewMyPlants);
+        arrayListMyPlants.clear();
+        listViewMyPlants.setAdapter(null);
+
+
+        RequestMyPlants requestMyPlants = new RequestMyPlants();
+        requestMyPlants.RequestMyPlants(this);
+
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
+        navigation.setOnNavigationItemSelectedListener(new mOnNavigationItemSelectedListener());
+        navigation.getMenu().getItem(1).setChecked(true);
+    }
 
     @Override
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
         this.arrayListMyPlants = arrayListMyPlants;
-        ListView listViewMyPlants = findViewById(R.id.listViewMyPlants);
+        Collections.reverse(arrayListMyPlants);
         myPlantsListAdapter adapterMyPlants = new myPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
         listViewMyPlants.setAdapter(adapterMyPlants);
         listViewMyPlants.setOnItemClickListener(new ListItemClickListener());

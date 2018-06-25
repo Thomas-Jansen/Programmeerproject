@@ -2,7 +2,6 @@ package thomas.jansen.plantbase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MyPlant implements Serializable{
 
@@ -14,7 +13,7 @@ public class MyPlant implements Serializable{
     private float minTemp;
     private float minpH;
     private float watering;
-    private Date startdate;
+    private Long startdate;
     private boolean alive;
     private boolean connected;
     private String arduinoName;
@@ -22,12 +21,12 @@ public class MyPlant implements Serializable{
     private String imageID;
     private ArrayList<String> addedImages;
     private String avatarImage;
-    private Date lastwatered;
+    private Long lastwatered;
 
     public MyPlant(){}
 
     public MyPlant(String name, String latinName, String status, float maxTemp, float maxpH, float minTemp, float minpH,
-                   float watering, Date startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID, ArrayList<String> addedImages, String avatarImage, Date lastwatered) {
+                   float watering, Long startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID, ArrayList<String> addedImages, String avatarImage, Long lastwatered) {
         this.name = name;
         this.latinName = latinName;
         this.status = status;
@@ -49,11 +48,11 @@ public class MyPlant implements Serializable{
         this.lastwatered = lastwatered;
     }
 
-    public Date getLastwatered() {
+    public Long getLastwatered() {
         return lastwatered;
     }
 
-    public void setLastwatered(Date lastwatered) {
+    public void setLastwatered(Long lastwatered) {
         this.lastwatered = lastwatered;
     }
 
@@ -153,11 +152,11 @@ public class MyPlant implements Serializable{
         this.watering = watering;
     }
 
-    public Date getStartdate() {
+    public Long getStartdate() {
         return startdate;
     }
 
-    public void setStartdate(Date startdate) {
+    public void setStartdate(Long startdate) {
         this.startdate = startdate;
     }
 

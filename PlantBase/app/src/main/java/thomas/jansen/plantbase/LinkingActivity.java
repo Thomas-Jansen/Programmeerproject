@@ -87,6 +87,7 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
         this.arrayListMyPlants = arrayListMyPlants;
         plantsLinkView = findViewById(R.id.listViewMPLink);
+        plantsLinkView.setAdapter(null);
         AdapterLinkMyPlant adapterLinkMyPlant = new AdapterLinkMyPlant(this, R.layout.item_link_myplant, arrayListMyPlants);
         plantsLinkView.setAdapter(adapterLinkMyPlant);
         plantsLinkView.setOnItemClickListener(new onPlantLinkClickListener());

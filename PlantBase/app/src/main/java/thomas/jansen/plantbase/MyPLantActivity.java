@@ -47,7 +47,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -160,6 +159,8 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
             if (myPlant.isAlive()) {
                 myPlant.setAlive(false);
                 myPlant.setStatus("Deceased");
+                myPlant.setConnected(false);
+                myPlant.setArduinoName("none");
                 myPlant.setWaternotify(0);
                 diedButton.setText("I revived this plant");
             } else {
@@ -176,7 +177,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         @Override
         public void onClick(View v) {
 
-            Date now = Calendar.getInstance().getTime();
+            Long now = Calendar.getInstance().getTimeInMillis();
             myPlant.setLastwatered(now);
             myPlant.setStatus("OK");
             new UpdateMyPlantActivity(myPlant, getApplicationContext());
@@ -338,11 +339,11 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         nameView.setFocusable(true);
         statusView.setText("Status: "+myPlant.getStatus());
         @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        Date sinceDate = myPlant.getStartdate();
+        Long sinceDate = myPlant.getStartdate();
         String date = df.format(sinceDate);
         dateView.setText("Growing since: "+date);
-        Date currentDate = Calendar.getInstance().getTime();
-        dayView.setText("Days: "+(int)((currentDate.getTime()/(24*60*60*1000))-(int)(sinceDate.getTime()/(24*60*60*1000))));
+        Long currentDate = Calendar.getInstance().getTimeInMillis();
+        dayView.setText("Days: "+(currentDate - sinceDate)/(24*60*60*1000));
         String imageName= myPlant.getImageID();
         int imageId = getResources().getIdentifier(imageName , "drawable", getPackageName());
 
@@ -436,9 +437,23 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         @Override
         public void onClick(View v) {
 
-            myPlant.setAvatarImage((String) v.getTag());
-            new UpdateMyPlantActivity(myPlant, getApplicationContext());
-            setViews(myPlant);
+            if (!v.getTag().equals("none")) {
+                AlertDialog.Builder ImageDialog = new AlertDialog.Builder(MyPLantActivity.this);
+                ImageDialog.setTitle(myPlant.getName());
+                ImageView showImage = new ImageView(MyPLantActivity.this);
+                Picasso.with(getApplicationContext())
+                        .load(Uri.parse((String) v.getTag()))
+                        .into(showImage);
+                ImageDialog.setView(showImage);
+
+                ImageDialog.setNegativeButton("", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface arg0, int arg1)
+                    {
+                    }
+                });
+                ImageDialog.show();
+            }
         }
     }
 
@@ -501,6 +516,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         GraphView graph = findViewById(R.id.graph);
         graph.setVisibility(View.VISIBLE);
 
+
         graph.getGridLabelRenderer().setNumHorizontalLabels(0);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
@@ -512,12 +528,13 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
 
         // enable scaling and scrolling
         graph.getViewport().setScalable(true);
-//        graph.getViewport().setScalableY(true);
 
+        graph.destroyDrawingCache();
         graph.addSeries(seriesTemp);
         graph.addSeries(seriesHum);
         graph.addSeries(seriesMoist);
         graph.addSeries(seriesLight);
+
 
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);

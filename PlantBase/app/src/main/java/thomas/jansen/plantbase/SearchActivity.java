@@ -1,10 +1,14 @@
 package thomas.jansen.plantbase;
 
+import android.app.ActivityManager;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,21 +16,36 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
 public class SearchActivity extends AppCompatActivity implements RequestPlants.Callback{
 
     ArrayList<Plant> arrayListPlants;
-    ArrayList<String> arrayListPlantNames = new ArrayList<>();
+    Intent mBackgroundIntent;
+    Service mBackgroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
+        if (mAuth.getCurrentUser() != null) {
+            mBackgroundService = new BackgroundTask(getApplicationContext());
+            mBackgroundIntent = new Intent(getApplicationContext(), BackgroundTask.class);
+            if (!isMyServiceRunning(mBackgroundService.getClass())) {
+                startService(mBackgroundIntent);
+            }
+        }
 
 
 
@@ -47,6 +66,32 @@ public class SearchActivity extends AppCompatActivity implements RequestPlants.C
 
         RequestPlants requestPlants =  new RequestPlants();
         requestPlants.RequestPlants(this);
+    }
+
+    public Context getContext() {
+        Context context = SearchActivity.this;
+        return context;
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        stopService(mBackgroundIntent);
+        Log.i("MAINACT", "onDestroy!");
+        super.onDestroy();
+
     }
 
     @Override

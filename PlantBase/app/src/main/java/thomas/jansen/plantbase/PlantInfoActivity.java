@@ -115,13 +115,13 @@ public class PlantInfoActivity extends AppCompatActivity {
         newMyPlant.setAlive(true);
         newMyPlant.setConnected(false);
         newMyPlant.setArduinoName(null);
-        newMyPlant.setStartdate(Calendar.getInstance().getTime());
+        newMyPlant.setStartdate(Calendar.getInstance().getTimeInMillis());
         newMyPlant.setWaternotify(0);
         newMyPlant.setStatus("OK");
         newMyPlant.setImageID(plant.getImageID());
         newMyPlant.setArduinoName("none");
         newMyPlant.setAvatarImage("none");
-        newMyPlant.setLastwatered(Calendar.getInstance().getTime());
+        newMyPlant.setLastwatered(Calendar.getInstance().getTimeInMillis());
 
         ArrayList<String> addedImages = new ArrayList<>();
         Uri imageUri = Uri.parse("android.resource://thomas.jansen.plantbase/drawable/" +plant.getName().toLowerCase()+"_stock");

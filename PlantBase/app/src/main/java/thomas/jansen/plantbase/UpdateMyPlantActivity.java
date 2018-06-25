@@ -41,7 +41,7 @@ public class UpdateMyPlantActivity {
             for (DataSnapshot child : dataSnapshot.getChildren()) {
                 MyPlant myplant = child.getValue(MyPlant.class);
                 if (myplant != null) {
-                    System.out.println(myplant.getName());
+//                    System.out.println(myplant.getName());
                     if (myplant.getStartdate().compareTo(myPlant.getStartdate()) == 0) {
                         myRef.child(child.getKey()).setValue(myPlant);
                         System.out.println("geupdatet");

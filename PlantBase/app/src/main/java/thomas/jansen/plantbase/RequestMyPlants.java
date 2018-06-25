@@ -24,8 +24,11 @@ public class RequestMyPlants {
     public void RequestMyPlants(Callback callback) {
         this.callback = callback;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(Objects.requireNonNull(mAuth.getUid()));
-        myRef.orderByChild("name").addValueEventListener(new myPlantListener());
+        if (mAuth.getCurrentUser() != null) {
+            DatabaseReference myRef = database.getReference("users").child(Objects.requireNonNull(mAuth.getUid()));
+            myRef.orderByChild("alive").addValueEventListener(new myPlantListener());
+        }
+
     }
 
     private class myPlantListener implements ValueEventListener {

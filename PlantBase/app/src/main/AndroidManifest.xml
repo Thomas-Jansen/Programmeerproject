@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
 
     <application
         android:allowBackup="true"
@@ -43,6 +45,21 @@
         <activity android:name=".MyPLantActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".AddPlantActivity"></activity>
+
+        <service
+            android:name="thomas.jansen.plantbase.BackgroundTask"
+            android:enabled="true" >
+        </service>
+
+        <receiver
+            android:name="thomas.jansen.plantbase.SensorRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name="thomas.jasnen.ActivityRecognition.RestartSensor"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 
