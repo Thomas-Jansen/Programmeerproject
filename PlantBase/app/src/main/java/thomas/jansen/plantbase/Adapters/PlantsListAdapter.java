@@ -1,4 +1,11 @@
-package thomas.jansen.plantbase;
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
+
+    Custom adapter to show all Plants in listView.
+*/
+
+package thomas.jansen.plantbase.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,12 +19,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class plantsListAdapter extends ArrayAdapter<Plant> {
+import thomas.jansen.plantbase.Classes.Plant;
+import thomas.jansen.plantbase.R;
 
-    ArrayList<Plant> arrayListPlant;
-    Context context;
+public class PlantsListAdapter extends ArrayAdapter<Plant> {
 
-    public plantsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Plant> objects) {
+    private ArrayList<Plant> arrayListPlant;
+    private Context context;
+
+    public PlantsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Plant> objects) {
         super(context, resource, objects);
         arrayListPlant = objects;
         this.context = context;
@@ -29,7 +39,6 @@ class plantsListAdapter extends ArrayAdapter<Plant> {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_plant_info, parent, false);
         }
-
 
         Plant plant = arrayListPlant.get(position);
 
