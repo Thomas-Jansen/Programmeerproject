@@ -42,9 +42,9 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".MyPLantActivity" />
+        <activity android:name=".MyPlantActivity" />
         <activity android:name=".AccountActivity" />
-        <activity android:name=".AddPlantActivity"></activity>
+        <!--<activity android:name=".AddPlantActivity"></activity>-->
 
         <service
             android:name="thomas.jansen.plantbase.BackgroundTask"

@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class myPlantsListAdapter extends ArrayAdapter<MyPlant> {
+class MyPlantsListAdapter extends ArrayAdapter<MyPlant> {
 
     ArrayList<MyPlant> arrayListMyPlant;
     Context context;
 
-    public myPlantsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<MyPlant> objects) {
+    public MyPlantsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<MyPlant> objects) {
         super(context, resource, objects);
         arrayListMyPlant = objects;
         this.context = context;

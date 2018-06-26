@@ -96,7 +96,7 @@ public class PlantInfoActivity extends AppCompatActivity {
             }
 
             MyPlant newMyPlant =  createMyPlant(currentPlant);
-            Intent intentPlant = new Intent(PlantInfoActivity.this, MyPLantActivity.class);
+            Intent intentPlant = new Intent(PlantInfoActivity.this, MyPlantActivity.class);
             intentPlant.putExtra("MyPlant", newMyPlant);
             startActivity(intentPlant);
         }

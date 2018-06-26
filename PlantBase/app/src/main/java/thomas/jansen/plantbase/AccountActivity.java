@@ -1,3 +1,5 @@
+// Shows Account, with living plants, died plants and a Logout button.
+
 package thomas.jansen.plantbase;
 
 import android.content.Intent;
@@ -48,8 +50,6 @@ public class AccountActivity extends AppCompatActivity implements RequestMyPlant
         RequestMyPlants requestMyPlants = new RequestMyPlants();
         requestMyPlants.RequestMyPlants(this);
 
-
-
         Button buttonLogout = findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(new logoutOnClickListener());
 
@@ -59,6 +59,7 @@ public class AccountActivity extends AppCompatActivity implements RequestMyPlant
         navigation.getMenu().getItem(3).setChecked(true);
     }
 
+//    Logout
     private class logoutOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -68,6 +69,7 @@ public class AccountActivity extends AppCompatActivity implements RequestMyPlant
         }
     }
 
+//    Show # growing plants and plants that died.
     @Override
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
         for (MyPlant myPlant: arrayListMyPlants) {
@@ -89,8 +91,6 @@ public class AccountActivity extends AppCompatActivity implements RequestMyPlant
         } else {
             textViewDeceasedPlants.setText(myDeceasedPlantsNumber+ " plants died");
         }
-
-
     }
 
     @Override
@@ -98,6 +98,7 @@ public class AccountActivity extends AppCompatActivity implements RequestMyPlant
         Toast.makeText(AccountActivity.this, (CharSequence) error, LENGTH_LONG).show();
     }
 
+//    Bottom navigation bar.
     private class mOnNavigationItemSelectedListener
             implements BottomNavigationView.OnNavigationItemSelectedListener {
 

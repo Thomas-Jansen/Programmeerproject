@@ -1,3 +1,5 @@
+// MyPlant activity handles everything related to MyPlant.
+
 package thomas.jansen.plantbase;
 
 import android.annotation.SuppressLint;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -51,7 +54,7 @@ import java.util.Objects;
 
 import static android.widget.Toast.LENGTH_LONG;
 
-public class MyPLantActivity extends AppCompatActivity implements StorageClass.Callback, RequestPlantNode.Callback{
+public class MyPlantActivity extends AppCompatActivity implements StorageClass.Callback, RequestPlantNode.Callback{
 
     TabHost tabHost;
     CheckBox checkBoxNever;
@@ -80,7 +83,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
 
         if (mAuth.getCurrentUser() == null) {
-            Intent intentLogin = new Intent(MyPLantActivity.this, LoginActivity.class);
+            Intent intentLogin = new Intent(MyPlantActivity.this, LoginActivity.class);
             startActivity(intentLogin);
         }
         database = FirebaseDatabase.getInstance();
@@ -108,6 +111,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         photosLayout = findViewById(R.id.linearPhotos);
         setViews(myPlant);
 
+        // Setup Tabs
         TabHost host = findViewById(R.id.tabHost);
         host.setup();
 
@@ -143,7 +147,6 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
 
         nameView.setOnEditorActionListener(new nameEditListener());
 
-
         buttonPlantDied.setOnClickListener(new plantDiedOnClickListener());
         Button buttonRemovePlant = findViewById(R.id.buttonRemoveMyPlant);
         buttonRemovePlant.setOnClickListener(new removeOnClickListener());
@@ -152,7 +155,10 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         plantWatered.setOnClickListener(new wateredOnClickListener());
     }
 
+    // Sets living plants to deceased and deceased plant to alive.
     private class plantDiedOnClickListener implements View.OnClickListener {
+
+        @SuppressLint("SetTextI18n")
         @Override
         public void onClick(View v) {
             Button diedButton = findViewById(v.getId());
@@ -173,6 +179,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Update last watered for MyPlant.
     private class wateredOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -185,17 +192,19 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Delete current MyPlant.
     private class removeOnClickListener implements View.OnClickListener {
+
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(MyPLantActivity.this)
+            new AlertDialog.Builder(MyPlantActivity.this)
                     .setTitle("Remove "+myPlant.getName())
                     .setMessage("Are you certain you want to remove this plant?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             new UpdateMyPlantActivity(myPlant, getApplicationContext()).RemoveMyPlantActivity();
-                            Intent intentMyPlants = new Intent(MyPLantActivity.this, MyPlantsList.class);
+                            Intent intentMyPlants = new Intent(MyPlantActivity.this, MyPlantsList.class);
                             startActivity(intentMyPlants);
                         }
 
@@ -211,13 +220,14 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Edit plant name for current MyPlant.
     private class nameEditListener implements EditText.OnEditorActionListener {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 myPlant.setName(String.valueOf(nameView.getText()));
                 new UpdateMyPlantActivity(myPlant, getApplicationContext());
-                hideKeyboard(MyPLantActivity.this);
+                hideKeyboard(MyPlantActivity.this);
                 nameView.setFocusable(false);
                 setViews(myPlant);
             }
@@ -225,10 +235,11 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Ad an photo from your gallery to MyPlant or take a new photo.
     private class addPhotoOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(MyPLantActivity.this)
+            new AlertDialog.Builder(MyPlantActivity.this)
                     .setTitle("Add a picture of "+myPlant.getName())
                     .setMessage("Take a picture or choose an existing one")
                     .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -254,29 +265,33 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
                     })
                     .create()
                     .show();
-
         }
     }
 
+    // Activity result from addPhoto.
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch(requestCode) {
             case 0:
+                // New photo is taken.
                 if(resultCode == RESULT_OK){
-                    Bitmap takenimage = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    Bitmap takenimage = (Bitmap) Objects.requireNonNull(imageReturnedIntent.getExtras()).get("data");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    takenimage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    assert takenimage != null;
+                    takenimage.compress(Bitmap.CompressFormat.JPEG, 500, baos);
                     byte[] newPhoto =  baos.toByteArray();
                     StorageClass storageClass = new StorageClass(this, myPlant, this);
                     storageClass.StoreImage(newPhoto);
                 }
                 break;
             case 1:
+                // A photo has been chosen from gallery.
                 if(resultCode == RESULT_OK){
                     Uri imageReturned = imageReturnedIntent.getData();
                     byte[] photo = null;
                     try {
                         ContentResolver cr = getBaseContext().getContentResolver();
+                        assert imageReturned != null;
                         InputStream inputStream = cr.openInputStream(imageReturned);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -292,6 +307,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Got photos from Firebase Storage.
     @Override
     public void gotPhotoUri(Uri addedPhoto) {
         ArrayList<String> uriArrayList = myPlant.getAddedImages();
@@ -301,6 +317,72 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         setViews(myPlant);
     }
 
+    // Show added photo in popup screen.
+    private class onPhotoClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            if (!v.getTag().equals("none")) {
+                AlertDialog.Builder ImageDialog = new AlertDialog.Builder(MyPlantActivity.this);
+                ImageDialog.setTitle(myPlant.getName());
+                ImageView showImage = new ImageView(MyPlantActivity.this);
+                Picasso.with(getApplicationContext())
+                        .load(Uri.parse((String) v.getTag()))
+                        .into(showImage);
+                ImageDialog.setView(showImage);
+
+                ImageDialog.setNegativeButton("", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface arg0, int arg1)
+                    {
+                    }
+                });
+                ImageDialog.show();
+            }
+        }
+    }
+
+    // Delete added photo.
+    private class deleteOnLongClickListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(final View v) {
+            new AlertDialog.Builder(MyPlantActivity.this)
+                    .setTitle("Remove photo")
+                    .setMessage("Are you certain you want to remove this photo?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String imageUri = (String) v.getTag();
+                            new StorageClass(getApplicationContext(), myPlant,
+                                    MyPlantActivity.this).DeleteStoredPhoto(Uri.parse(imageUri));
+                            ArrayList<String> addedImages = myPlant.getAddedImages();
+                            for (int x = 0; x < addedImages.size(); x++) {
+                                if (imageUri.equals(addedImages.get(x))) {
+                                    addedImages.remove(x);
+                                }
+                            }
+                            myPlant.setAddedImages(addedImages);
+                            if (myPlant.getAvatarImage().equals(imageUri)) {
+                                myPlant.setAvatarImage("none");
+                            }
+                            new UpdateMyPlantActivity(myPlant, getApplicationContext());
+                            setViews(myPlant);
+                        }
+
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .create()
+                    .show();
+            return false;
+        }
+    }
+
+    // Set water notifications.
     private class checkBoxOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -327,6 +409,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
+    // Set all MyPlant views. Gets updated whenever something has been changed.
     @SuppressLint("SetTextI18n")
     private void setViews(MyPlant myPlant) {
 
@@ -372,7 +455,6 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
             checkBoxArduino.setEnabled(false);
         }
 
-
         int x = myPlant.getWaternotify();
         switch (x) {
             case (0):
@@ -392,12 +474,13 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
                 break;
         }
 
+        // Set added photos in a dynamic view.
         photosLayout.removeAllViews();
         if (myPlant.getAddedImages() != null) {
             ArrayList<String> addedPhotos = myPlant.getAddedImages();
             for (x = 0; x < addedPhotos.size(); x++) {
                 Uri photoUri = Uri.parse(addedPhotos.get(x));
-                ImageView photoView = new ImageView(MyPLantActivity.this);
+                ImageView photoView = new ImageView(MyPlantActivity.this);
                 photoView.setLayoutParams(new android.view.ViewGroup.LayoutParams(400,400));
                 photoView.setMaxHeight(400);
                 photoView.setMaxWidth(400);
@@ -421,10 +504,11 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
             }
         }
 
+        // If plant is connected to a PlantNode, get PlantNode data.
         if (myPlant.isConnected()) {
             TextView textViewNotConnected = findViewById(R.id.textViewNotConnected);
             textViewNotConnected.setVisibility(View.INVISIBLE);
-            new RequestPlantNode().RequestPlantNodeData(this, "PlantNode_01");
+            new RequestPlantNode().RequestPlantNodeData(this, myPlant.getArduinoName());
         } else {
             GraphView graphView = findViewById(R.id.graph);
             graphView.setVisibility(View.INVISIBLE);
@@ -433,69 +517,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         }
     }
 
-    private class onPhotoClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-            if (!v.getTag().equals("none")) {
-                AlertDialog.Builder ImageDialog = new AlertDialog.Builder(MyPLantActivity.this);
-                ImageDialog.setTitle(myPlant.getName());
-                ImageView showImage = new ImageView(MyPLantActivity.this);
-                Picasso.with(getApplicationContext())
-                        .load(Uri.parse((String) v.getTag()))
-                        .into(showImage);
-                ImageDialog.setView(showImage);
-
-                ImageDialog.setNegativeButton("", new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface arg0, int arg1)
-                    {
-                    }
-                });
-                ImageDialog.show();
-            }
-        }
-    }
-
-    private class deleteOnLongClickListener implements View.OnLongClickListener {
-        @Override
-        public boolean onLongClick(final View v) {
-            new AlertDialog.Builder(MyPLantActivity.this)
-                    .setTitle("Remove photo")
-                    .setMessage("Are you certain you want to remove this photo?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String imageUri = (String) v.getTag();
-                            new StorageClass(getApplicationContext(), myPlant,
-                                    MyPLantActivity.this).DeleteStoredPhoto(Uri.parse(imageUri));
-                            ArrayList<String> addedImages = myPlant.getAddedImages();
-                            for (int x = 0; x < addedImages.size(); x++) {
-                                if (imageUri.equals(addedImages.get(x))) {
-                                    addedImages.remove(x);
-                                }
-                            }
-                            myPlant.setAddedImages(addedImages);
-                            if (myPlant.getAvatarImage().equals(imageUri)) {
-                                myPlant.setAvatarImage("none");
-                            }
-                            new UpdateMyPlantActivity(myPlant, getApplicationContext());
-                            setViews(myPlant);
-                        }
-
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .create()
-                    .show();
-            return false;
-        }
-    }
-
+    // Got PlantNode data, create graph.
     @Override
     public void gotPlantNodeData(DataPoint[] dataPointsTemp, DataPoint[] dataPointsHum, DataPoint[] dataPointsMoist, DataPoint[] dataPointsLight) {
 
@@ -504,13 +526,13 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         LineGraphSeries<DataPoint> seriesMoist = new LineGraphSeries<>(dataPointsMoist);
         LineGraphSeries<DataPoint> seriesLight = new LineGraphSeries<>(dataPointsLight);
 
-        seriesTemp.setColor(getResources().getColor(R.color.color_english_vermillion));
+        seriesTemp.setColor(ContextCompat.getColor(getApplicationContext(), R.color.color_english_vermillion));
         seriesTemp.setTitle("Temperature \u2103");
-        seriesHum.setColor(getResources().getColor(R.color.color_blue_jeans));
+        seriesHum.setColor(ContextCompat.getColor(getApplicationContext(), R.color.color_blue_jeans));
         seriesHum.setTitle("Relative Humidity %");
-        seriesMoist.setColor(getResources().getColor(R.color.color_android_green));
+        seriesMoist.setColor(ContextCompat.getColor(getApplicationContext(), R.color.color_android_green));
         seriesMoist.setTitle("Soil Moisture %");
-        seriesLight.setColor(getResources().getColor(R.color.color_gargoyle_gas));
+        seriesLight.setColor(ContextCompat.getColor(getApplicationContext(), R.color.color_gargoyle_gas));
         seriesLight.setTitle("Light %");
 
         GraphView graph = findViewById(R.id.graph);
@@ -526,7 +548,6 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(dataPointsTemp.length);
 
-        // enable scaling and scrolling
         graph.getViewport().setScalable(true);
 
         graph.destroyDrawingCache();
@@ -534,7 +555,6 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         graph.addSeries(seriesHum);
         graph.addSeries(seriesMoist);
         graph.addSeries(seriesLight);
-
 
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
@@ -571,19 +591,19 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_search:
-                    Intent intentSearch = new Intent(MyPLantActivity.this, SearchActivity.class);
+                    Intent intentSearch = new Intent(MyPlantActivity.this, SearchActivity.class);
                     startActivity(intentSearch);
                     return true;
                 case R.id.navigation_plants:
-                    Intent intentMyPlants = new Intent(MyPLantActivity.this, MyPlantsList.class);
+                    Intent intentMyPlants = new Intent(MyPlantActivity.this, MyPlantsList.class);
                     startActivity(intentMyPlants);
                     return true;
                 case R.id.navigation_linking:
-                    Intent intentLinking = new Intent(MyPLantActivity.this, LinkingActivity.class);
+                    Intent intentLinking = new Intent(MyPlantActivity.this, LinkingActivity.class);
                     startActivity(intentLinking);
                     return true;
                 case R.id.navigation_account:
-                    Intent intentLogin = new Intent(MyPLantActivity.this, LoginActivity.class);
+                    Intent intentLogin = new Intent(MyPlantActivity.this, LoginActivity.class);
                     startActivity(intentLogin);
                     return true;
             }
@@ -600,6 +620,7 @@ public class MyPLantActivity extends AppCompatActivity implements StorageClass.C
         if (view == null) {
             view = new View(activity);
         }
+        assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

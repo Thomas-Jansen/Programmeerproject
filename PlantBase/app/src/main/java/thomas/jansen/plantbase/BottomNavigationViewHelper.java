@@ -1,3 +1,5 @@
+// A helper to use bottom navigation bar.
+
 package thomas.jansen.plantbase;
 
 import android.annotation.SuppressLint;
@@ -19,10 +21,7 @@ public class BottomNavigationViewHelper {
             shiftingMode.setAccessible(false);
             for (int i = 0; i < menuView.getChildCount(); i++) {
                 BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
-                //noinspection RestrictedApi 
                 item.setShiftingMode(false);
-                // set once again checked value, so view will be updated 
-                //noinspection RestrictedApi 
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {

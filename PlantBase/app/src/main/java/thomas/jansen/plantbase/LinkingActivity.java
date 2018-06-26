@@ -1,3 +1,5 @@
+// Links plants to PlantNodes.
+
 package thomas.jansen.plantbase;
 
 import android.content.DialogInterface;
@@ -5,12 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,9 +29,8 @@ import static thomas.jansen.plantbase.AccountActivity.mAuth;
 
 public class LinkingActivity extends AppCompatActivity implements RequestMyPlants.Callback {
 
-    ArrayList<MyPlant> arrayListMyPlants = new ArrayList<>();
-    ArrayList<String> plantNodeNameList = new ArrayList<>();
-
+    ArrayList<MyPlant> arrayListMyPlants;
+    ArrayList<String> plantNodeNameList;
     View highlightedView;
     ListView plantNodeView;
     ListView plantsLinkView;
@@ -47,13 +50,16 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
             startActivity(intentLogin);
         }
 
+        arrayListMyPlants = new ArrayList<>();
+        plantNodeNameList = new ArrayList<>();
+
         myPlant = null;
         highlightedView = null;
         plantNodeView = findViewById(R.id.listViewPlantNodes);
         arrayListMyPlants.clear();
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("plantnode_data");
-        myRef.addValueEventListener(new myPlantListener());
+        myRef.addListenerForSingleValueEvent(new myPlantListener());
 
         RequestMyPlants requestMyPlants = new RequestMyPlants();
         requestMyPlants.RequestMyPlants(this);
@@ -64,6 +70,7 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
         navigation.getMenu().getItem(2).setChecked(true);
     }
 
+    // Get PlantNode names and set adapter.
     private class myPlantListener implements ValueEventListener {
 
         @Override
@@ -77,12 +84,12 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            String errorString = databaseError.toString();
+            Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
         }
-
     }
 
-
+    // Get MyPlants, set adapter and (long)clickListener.
     @Override
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
         this.arrayListMyPlants = arrayListMyPlants;
@@ -96,9 +103,11 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
 
     @Override
     public void gotError(DatabaseError error) {
-
+        String errorString = error.toString();
+        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
+    // Highlight a clicked MyPlant and set listener on PlantNodes.
     private class onPlantLinkClickListener implements  AdapterView.OnItemClickListener {
 
         @Override
@@ -106,23 +115,23 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
             myPlant = (MyPlant) parent.getItemAtPosition(position);
             if (!myPlant.isConnected()) {
                 if (highlightedView == view) {
-                    highlightedView.setBackgroundColor(getResources().getColor(R.color.color_none));
+                    highlightedView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_none));
                     highlightedView = null;
                     plantNodeView.setOnItemClickListener(null);
                 } else {
                     for (int x = 0; x < parent.getCount(); x++) {
                         View view1 = parent.getChildAt(x);
-                        view1.setBackgroundColor(getResources().getColor(R.color.color_none));
+                        view1.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_none));
                     }
                     highlightedView = view;
-                    highlightedView.setBackgroundColor(getResources().getColor(R.color.color_light_grey));
+                    highlightedView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_light_grey));
                     plantNodeView.setOnItemClickListener(new onNodeClickListener());
                 }
             }
-
         }
     }
 
+    // LongClickListener to delete connection between MyPlant and PlantNode.
     private class onPlantLinkLongClickListener implements  AdapterView.OnItemLongClickListener {
 
         @Override
@@ -153,11 +162,11 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
                         .create()
                         .show();
             }
-
             return false;
         }
     }
 
+    // OnclickListener for PlantNodes, establish connection
     private class onNodeClickListener implements  AdapterView.OnItemClickListener {
 
         @Override

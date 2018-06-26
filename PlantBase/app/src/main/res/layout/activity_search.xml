@@ -102,7 +102,7 @@
             android:textStyle="italic" />
 
         <Button
-            android:id="@+id/buttonAdd"
+            android:id="@+id/buttonMyPlants"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginLeft="40dp"
@@ -110,7 +110,7 @@
             android:alpha="0.5"
             android:background="@android:drawable/editbox_background_normal"
             android:fontFamily="@font/quicksand_regular"
-            android:text="Add new plant"
+            android:text="My plants"
             android:textAllCaps="false"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="18sp" />

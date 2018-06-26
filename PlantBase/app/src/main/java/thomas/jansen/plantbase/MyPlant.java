@@ -1,3 +1,5 @@
+// MyPlant class.
+
 package thomas.jansen.plantbase;
 
 import java.io.Serializable;
@@ -26,7 +28,9 @@ public class MyPlant implements Serializable{
     public MyPlant(){}
 
     public MyPlant(String name, String latinName, String status, float maxTemp, float maxpH, float minTemp, float minpH,
-                   float watering, Long startdate, boolean alive, boolean connected, String arduinoName, int waternotify, String imageID, ArrayList<String> addedImages, String avatarImage, Long lastwatered) {
+                   float watering, Long startdate, boolean alive, boolean connected, String arduinoName,
+                   int waternotify, String imageID, ArrayList<String> addedImages, String avatarImage, Long lastwatered) {
+
         this.name = name;
         this.latinName = latinName;
         this.status = status;
@@ -42,8 +46,6 @@ public class MyPlant implements Serializable{
         this.waternotify = waternotify;
         this.imageID = imageID;
         this.addedImages = addedImages;
-
-
         this.avatarImage = avatarImage;
         this.lastwatered = lastwatered;
     }

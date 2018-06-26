@@ -47,8 +47,6 @@ public class SearchActivity extends AppCompatActivity implements RequestPlants.C
             }
         }
 
-
-
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -60,8 +58,8 @@ public class SearchActivity extends AppCompatActivity implements RequestPlants.C
         Button buttonBrowse = findViewById(R.id.buttonBrowse);
         buttonBrowse.setOnClickListener(new browseonClickListener());
 
-        Button buttonAdd = findViewById(R.id.buttonAdd);
-        buttonAdd.setOnClickListener(new addonClickListener());
+        Button buttonMyPlants = findViewById(R.id.buttonMyPlants);
+        buttonMyPlants.setOnClickListener(new MPonClickListener());
 
 
         RequestPlants requestPlants =  new RequestPlants();
@@ -104,11 +102,11 @@ public class SearchActivity extends AppCompatActivity implements RequestPlants.C
         Toast.makeText(SearchActivity.this, (CharSequence) error, LENGTH_LONG).show();
     }
 
-    private class addonClickListener implements View.OnClickListener {
+    private class MPonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intentAdd = new Intent(SearchActivity.this, AddPlantActivity.class);
-            startActivity(intentAdd);
+            Intent intentMyPlants = new Intent(SearchActivity.this, MyPlantsList.class);
+            startActivity(intentMyPlants);
         }
     }
 

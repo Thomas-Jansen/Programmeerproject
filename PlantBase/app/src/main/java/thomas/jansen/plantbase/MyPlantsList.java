@@ -86,7 +86,7 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
         this.arrayListMyPlants = arrayListMyPlants;
         Collections.reverse(arrayListMyPlants);
-        myPlantsListAdapter adapterMyPlants = new myPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
+        MyPlantsListAdapter adapterMyPlants = new MyPlantsListAdapter(this, R.layout.item_my_plant, arrayListMyPlants);
         listViewMyPlants.setAdapter(adapterMyPlants);
         listViewMyPlants.setOnItemClickListener(new ListItemClickListener());
     }
@@ -100,7 +100,7 @@ public class MyPlantsList extends AppCompatActivity implements RequestMyPlants.C
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             MyPlant clickedMyPlant = (MyPlant) adapterView.getItemAtPosition(i);
-            Intent intentMyPlant = new Intent(MyPlantsList.this, MyPLantActivity.class);
+            Intent intentMyPlant = new Intent(MyPlantsList.this, MyPlantActivity.class);
             intentMyPlant.putExtra("clickedMyPlant", clickedMyPlant);
             startActivity(intentMyPlant);
         }

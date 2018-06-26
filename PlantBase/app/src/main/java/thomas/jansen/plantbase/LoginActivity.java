@@ -1,3 +1,5 @@
+// Login activity. User can create a new account using their email or login with an existing account.
+
 package thomas.jansen.plantbase;
 
 import android.content.Intent;
@@ -50,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonCreate.setOnClickListener(new createOnclickListener());
     }
 
+    // Create a new account.
     private class createOnclickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -70,14 +73,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+                            Toast.makeText(LoginActivity.this, "Account created.", Toast.LENGTH_SHORT).show();
                             Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
                             startActivity(intentAccount);
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -85,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Login with existing account
     private class loginOnclickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -99,10 +103,8 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "signInWithEmail:success");
-
                                     Intent intentAccount = new Intent(LoginActivity.this, AccountActivity.class);
                                     startActivity(intentAccount);
-
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
