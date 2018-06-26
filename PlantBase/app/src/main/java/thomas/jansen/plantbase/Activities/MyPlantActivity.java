@@ -287,10 +287,10 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
             case 0:
                 // New photo is taken.
                 if(resultCode == RESULT_OK){
-                    Bitmap takenimage = (Bitmap) Objects.requireNonNull(imageReturnedIntent.getExtras()).get("data");
+                    Bitmap takenImage = (Bitmap) Objects.requireNonNull(imageReturnedIntent.getExtras()).get("data");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    assert takenimage != null;
-                    takenimage.compress(Bitmap.CompressFormat.JPEG, 500, baos);
+                    assert takenImage != null;
+                    takenImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] newPhoto =  baos.toByteArray();
                     StorageRequest storageRequest = new StorageRequest(this, myPlant, this);
                     storageRequest.StoreImage(newPhoto);
@@ -338,6 +338,7 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
                 AlertDialog.Builder ImageDialog = new AlertDialog.Builder(MyPlantActivity.this);
                 ImageDialog.setTitle(myPlant.getName());
                 ImageView showImage = new ImageView(MyPlantActivity.this);
+                showImage.setMinimumHeight(900);
                 Picasso.with(getApplicationContext())
                         .load(Uri.parse((String) v.getTag()))
                         .into(showImage);
