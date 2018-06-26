@@ -1,14 +1,21 @@
-package thomas.jansen.plantbase;
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
+
+    Helper class for backgroundTask.
+*/
+
+package thomas.jansen.plantbase.Helpers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
+import thomas.jansen.plantbase.Notification.BackgroundTask;
 
 public class SensorRestarterBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(SensorRestarterBroadcastReceiver.class.getSimpleName(), "Service Stops! Oooooooooooooppppssssss!!!!");
         context.startService(new Intent(context, BackgroundTask.class));;
     }
 }

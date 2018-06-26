@@ -1,6 +1,11 @@
-// Custom adapter to show MyPlants in LinkingActivity.
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
 
-package thomas.jansen.plantbase;
+    Custom adapter to show MyPlants in LinkingActivity.
+*/
+
+package thomas.jansen.plantbase.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,6 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import thomas.jansen.plantbase.Classes.MyPlant;
+import thomas.jansen.plantbase.R;
 
 public class AdapterLinkMyPlant extends ArrayAdapter<MyPlant> {
 

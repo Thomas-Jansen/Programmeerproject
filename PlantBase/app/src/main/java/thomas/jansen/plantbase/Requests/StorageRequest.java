@@ -1,4 +1,11 @@
-package thomas.jansen.plantbase;
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
+
+    Request added photos from FireBase storage.
+*/
+
+package thomas.jansen.plantbase.Requests;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,7 +15,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -16,32 +22,31 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Calendar;
 import java.util.Date;
 
-import static android.widget.Toast.LENGTH_LONG;
-import static thomas.jansen.plantbase.AccountActivity.mAuth;
+import thomas.jansen.plantbase.Classes.MyPlant;
 
-public class StorageClass {
+import static android.widget.Toast.LENGTH_LONG;
+import static thomas.jansen.plantbase.Activities.AccountActivity.mAuth;
+
+public class StorageRequest {
 
     private StorageReference mStorageRef;
-    private StorageReference riversRef;
     private Context context;
     private MyPlant myPlant;
-    private Uri photo;
-    public Uri photoAdded;
+    private Uri photoAdded;
     private Callback callback;
 
     public interface Callback {
         void gotPhotoUri(Uri addedPhoto);
     }
 
-     StorageClass(Context context, MyPlant myPlant, Callback callback) {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+     public StorageRequest(Context context, MyPlant myPlant, Callback callback) {
 
         this.context = context;
         this.myPlant = myPlant;
         this.callback = callback;
     }
 
+    // Query.
     public void StoreImage(byte[] photoTaken) {
 
         if (mAuth == null) {
@@ -52,7 +57,6 @@ public class StorageClass {
                 .child(String.valueOf(myPlant.getStartdate())).child(String.valueOf(currentDate+".jpg"));
         UploadTask uploadTask = mStorageRef.putBytes(photoTaken);
 
-        // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -63,11 +67,9 @@ public class StorageClass {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Photo added");
                 mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        System.out.println("Uri Added "+uri);
                         photoAdded = uri;
                         callback.gotPhotoUri(photoAdded);
                     }
@@ -76,6 +78,7 @@ public class StorageClass {
         });
     }
 
+    // Delete query.
     public void DeleteStoredPhoto(Uri path) {
 
         if (mAuth == null) {

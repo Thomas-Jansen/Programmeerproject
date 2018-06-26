@@ -1,8 +1,12 @@
-// Performs background calculations and requests a notification whenever a plant needs water.
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
 
-// From: https://fabcirablog.weebly.com/blog/creating-a-never-ending-background-service-in-android
+    Performs background calculations and requests a notification whenever a plant needs water.
+    From: https://fabcirablog.weebly.com/blog/creating-a-never-ending-background-service-in-android
+*/
 
-package thomas.jansen.plantbase;
+package thomas.jansen.plantbase.Notification;
 
 import android.app.Service;
 import android.content.Context;
@@ -19,13 +23,23 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static thomas.jansen.plantbase.AccountActivity.mAuth;
+import thomas.jansen.plantbase.Classes.MyPlant;
+import thomas.jansen.plantbase.Requests.RequestMyPlants;
+import thomas.jansen.plantbase.Requests.RequestPlantNode;
+import thomas.jansen.plantbase.Requests.UpdateMyPlantRequest;
+
+import static thomas.jansen.plantbase.Activities.AccountActivity.mAuth;
 
 public class BackgroundTask extends Service implements RequestMyPlants.Callback, RequestPlantNode.Callback {
 
     static Context context;
-    ArrayList<String> plantNames;
-    int DAY = 
+    ArrayList<String> plantNames = new ArrayList<>();
+    int SECOND = 1000;
+    int HOUR = 3600000;
+    int DAY = 86400000;
+    int TWO_DAYS = 172800000;
+    int WEEK = 604800000;
+
 
     public BackgroundTask() {}
 
@@ -56,7 +70,7 @@ public class BackgroundTask extends Service implements RequestMyPlants.Callback,
         initializeTimerTask();
 
         // schedule the timer, to wake up every hour
-        timer.schedule(timerTask, 1000,  60*60*1000);
+        timer.schedule(timerTask, SECOND,  HOUR);
     }
     // Request notification.
     public void initializeTimerTask() {
@@ -108,28 +122,28 @@ public class BackgroundTask extends Service implements RequestMyPlants.Callback,
                     continue;
                 }
                 case (1): {
-                    if (( now - myPlant.getLastwatered()) > 86400000) {
+                    if (( now - myPlant.getLastwatered()) > DAY) {
                         plantNames.add(myPlant.getName());
                         myPlant.setStatus("Water!");
-                        new UpdateMyPlantActivity(myPlant, context);
+                        new UpdateMyPlantRequest(myPlant, context);
                     }
                 }
                 case (2): {
-                    if (( now - myPlant.getLastwatered()) > 172800000) {
+                    if (( now - myPlant.getLastwatered()) > TWO_DAYS) {
                         plantNames.add(myPlant.getName());
                         myPlant.setStatus("Water!");
-                        new UpdateMyPlantActivity(myPlant, context);
+                        new UpdateMyPlantRequest(myPlant, context);
                     }
                 }
                 case (3): {
-                    if (( now -  myPlant.getLastwatered()) > 604800000) {
+                    if (( now -  myPlant.getLastwatered()) > WEEK) {
                         plantNames.add(myPlant.getName());
                         myPlant.setStatus("Water!");
-                        new UpdateMyPlantActivity(myPlant, context);
+                        new UpdateMyPlantRequest(myPlant, context);
                     }
                 }
                 case (4): {
-                    if (( now -  myPlant.getLastwatered()) > 86400000) {
+                    if (( now -  myPlant.getLastwatered()) > DAY) {
                         new RequestPlantNode().RequestLastNodeData(BackgroundTask.this, myPlant.getArduinoName(), myPlant);
                     }
 
@@ -154,35 +168,35 @@ public class BackgroundTask extends Service implements RequestMyPlants.Callback,
                 if (waterData < 10) {
                     plantNames.add(myPlant.getName());
                     myPlant.setStatus("Water!");
-                    new UpdateMyPlantActivity(myPlant, context);
+                    new UpdateMyPlantRequest(myPlant, context);
                 }
             }
             case (2): {
                 if (waterData < 20) {
                     plantNames.add(myPlant.getName());
                     myPlant.setStatus("Water!");
-                    new UpdateMyPlantActivity(myPlant, context);
+                    new UpdateMyPlantRequest(myPlant, context);
                 }
             }
             case (3): {
                 if (waterData < 40) {
                     plantNames.add(myPlant.getName());
                     myPlant.setStatus("Water!");
-                    new UpdateMyPlantActivity(myPlant, context);
+                    new UpdateMyPlantRequest(myPlant, context);
                 }
             }
             case (4): {
                 if (waterData < 50) {
                     plantNames.add(myPlant.getName());
                     myPlant.setStatus("Water!");
-                    new UpdateMyPlantActivity(myPlant, context);
+                    new UpdateMyPlantRequest(myPlant, context);
                 }
             }
             case (5): {
                 if (waterData < 60) {
                     plantNames.add(myPlant.getName());
                     myPlant.setStatus("Water!");
-                    new UpdateMyPlantActivity(myPlant, context);
+                    new UpdateMyPlantRequest(myPlant, context);
                 }
             }
         }

@@ -1,4 +1,11 @@
-package thomas.jansen.plantbase;
+/*
+    Thomas Jansen 11008938
+    Programmeerproject - PlantBase
+
+    Request Plants from FireBase.
+*/
+
+package thomas.jansen.plantbase.Requests;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -7,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import thomas.jansen.plantbase.Classes.Plant;
 
 public class RequestPlants {
 
@@ -18,6 +27,7 @@ public class RequestPlants {
         void gotError(DatabaseError error);
     }
 
+    // Query
     public void RequestPlants(RequestPlants.Callback callback) {
         this.callback = callback;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -27,13 +37,11 @@ public class RequestPlants {
 
     private class plantListener implements ValueEventListener {
 
-
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot child : dataSnapshot.getChildren()) {
                 Plant plant = child.getValue(Plant.class);
                 if (plant != null) {
-                    System.out.println(plant.getName());
                     arrayListPlants.add(plant);
                 }
             }
@@ -43,6 +51,5 @@ public class RequestPlants {
         public void onCancelled(DatabaseError databaseError) {
             callback.gotError(databaseError);
         }
-
     }
 }
