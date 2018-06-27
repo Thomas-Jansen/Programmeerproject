@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -338,7 +339,13 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
                 AlertDialog.Builder ImageDialog = new AlertDialog.Builder(MyPlantActivity.this);
                 ImageDialog.setTitle(myPlant.getName());
                 ImageView showImage = new ImageView(MyPlantActivity.this);
-                showImage.setMinimumHeight(900);
+
+                // Set parameters on showImage to show image correctly.
+                ViewGroup.MarginLayoutParams imageViewParams = new ViewGroup.MarginLayoutParams(
+                        ViewGroup.MarginLayoutParams.MATCH_PARENT,
+                        ViewGroup.MarginLayoutParams.MATCH_PARENT);
+
+                showImage.setLayoutParams(imageViewParams);
                 Picasso.with(getApplicationContext())
                         .load(Uri.parse((String) v.getTag()))
                         .into(showImage);
@@ -551,7 +558,7 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
         GraphView graph = findViewById(R.id.graph);
         graph.setVisibility(View.VISIBLE);
         graph.removeAllSeries();
-        graph.getGridLabelRenderer().setNumHorizontalLabels(dataPointsTemp.length / 10);
+
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(100);
@@ -567,6 +574,7 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
         graph.addSeries(seriesMoist);
         graph.addSeries(seriesLight);
 
+        graph.getGridLabelRenderer().setNumHorizontalLabels(dataPointsHum.length/50);
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
     }

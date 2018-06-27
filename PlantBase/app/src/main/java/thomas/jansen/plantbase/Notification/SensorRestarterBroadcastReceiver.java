@@ -5,13 +5,11 @@
     Helper class for backgroundTask.
 */
 
-package thomas.jansen.plantbase.Helpers;
+package thomas.jansen.plantbase.Notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
-import thomas.jansen.plantbase.Notification.BackgroundTask;
 
 public class SensorRestarterBroadcastReceiver extends BroadcastReceiver {
     @Override

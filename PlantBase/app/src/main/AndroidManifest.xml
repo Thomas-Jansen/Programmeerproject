@@ -54,7 +54,7 @@
         </service>
 
         <receiver
-            android:name="thomas.jansen.plantbase.Helpers.SensorRestarterBroadcastReceiver"
+            android:name="thomas.jansen.plantbase.Notification.SensorRestarterBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             android:label="RestartServiceWhenStopped">

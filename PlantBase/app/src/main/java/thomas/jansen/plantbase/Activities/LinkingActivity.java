@@ -105,10 +105,16 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
     // Get MyPlants, set adapter and (long)clickListener.
     @Override
     public void gotMyPlantsArray(ArrayList<MyPlant> arrayListMyPlants) {
-        this.arrayListMyPlants = arrayListMyPlants;
+
+        for (int x = 0; x < arrayListMyPlants.size(); x++) {
+            MyPlant myPlant = arrayListMyPlants.get(x);
+            if (myPlant.isAlive()) {
+                this.arrayListMyPlants.add(myPlant);
+            }
+        }
         plantsLinkView = findViewById(R.id.listViewMPLink);
         plantsLinkView.setAdapter(null);
-        AdapterLinkMyPlant adapterLinkMyPlant = new AdapterLinkMyPlant(this, R.layout.item_link_myplant, arrayListMyPlants);
+        AdapterLinkMyPlant adapterLinkMyPlant = new AdapterLinkMyPlant(this, R.layout.item_link_myplant, this.arrayListMyPlants);
         plantsLinkView.setAdapter(adapterLinkMyPlant);
         plantsLinkView.setOnItemClickListener(new onPlantLinkClickListener());
         plantsLinkView.setOnItemLongClickListener(new onPlantLinkLongClickListener());
@@ -133,8 +139,10 @@ public class LinkingActivity extends AppCompatActivity implements RequestMyPlant
                     plantNodeView.setOnItemClickListener(null);
                 } else {
                     for (int x = 0; x < parent.getCount(); x++) {
-                        View view1 = parent.getChildAt(x);
-                        view1.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_none));
+                        View viewX = parent.getChildAt(x);
+                        if (viewX != null) {
+                            viewX.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_none));
+                        }
                     }
                     highlightedView = view;
                     highlightedView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_light_grey));
