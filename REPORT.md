@@ -136,20 +136,20 @@ At first I ordered a NodeMCU to be the brain for the PlantNode. Upon arriving I 
 Writing code to upload images to the storage didn't take much time at all. Retrieving the images from the storage so they can be used in the app was the problem. I searched the web for a solution but couldn't find any that worked for me. Marijn Jansen proposed directly using the Uri that gets returned when uploading an image. This worked perfectly and it is a more elegant solution to the problem. 
 
 #### Adding pictures
-Implementing a function for taking a photo or choosing an existing photo from the gallery wasn't that difficult. The problem was that the two methods produce different formats as output. The solution is chose was creating a bitmap from the output of both methods and converting that to JPG. This made the dimensions of the photo taken quite small. If I had more time, I would try to refine the function so it saves larger images.
+Implementing a function for taking a photo or choosing an existing photo from the gallery wasn't that difficult. The problem was that the two methods produce different formats as output. The solution I chose was creating a bitmap from the output of both methods and converting that to JPG. This made the dimensions of the photo taken quite small. If I had more time, I would try to refine the function so it saves larger images.
 
 #### Notifications
-It took a couple of days to get notifications working. I tried different methods of timed functions so the app would keep sending notifications when a plant needs water. One of the problems was caused by an int overflow. I tried calculating the time between dates using the milliseconds, which caused the app to send notifications continuesly. After a while i found a method that works, but it is still not perfect. It would be best to let a server send notifications instead of the app itself, but I didn't implement this due to the time limit.
+It took a couple of days to get notifications working. I tried different methods of timed functions so the app would keep sending notifications when a plant needs water. One of the problems was caused by an int overflow. I tried calculating the time between dates using the milliseconds, which caused the app to send notifications continuously. After a while I found a method that works, but it is still not perfect. It would be best to let a server send notifications instead of the app itself, but I didn't implement this due to the time limit.
 
 #### Updating MyPlant
-Several functions require update the MyPlant object in the database. This caused a lot of problems and loops. Setting a SingleEvenListener on the database solved most of this. If I had more time I would implement more checks to make sure a loop can never happen again, but for now it works fine.
+Several functions require update the MyPlant object in the database. This caused a lot of problems and loops. Setting a SingleEventListener on the database solved most of this. If I had more time I would implement more checks to make sure a loop can never happen again, but for now it works fine.
 
 ## Changes
 
 #### Swipe tabs
-I wanted to implement a swipe listener on the tabs in MyPlantActivity, to make it more easy to change between tabs. This took a lot of time and i gave up in the end.
+I wanted to implement a swipe listener on the tabs in MyPlantActivity, to make it easier to change between tabs. This took a lot of time and I gave up in the end.
 
-#### Notifiations
+#### Notifications
 My plan was to send notifications whenever the PlantNode measured values that were outside the optimal growing conditions of the plant. 
 Due to lack if time I only implemented notifications for water.
 
@@ -160,9 +160,10 @@ I wanted to let users share pictures of the plants they are growing. This is som
 The plan was to let users set the pictures they took as an avatar for their plant. But it was very difficult to make the picture appear pretty because of the small pictures and the fact that different phones take different size pictures.
 
 #### Logs
-My first plan was to let users write logs about how the plants are growing. In the end I chose not to implement this feature en let users take pictures instead.
+My first plan was to let users write logs about how the plants are growing. In the end I chose not to implement this feature and let users take pictures instead.
 
-#### Letting users create new plants
+#### Let users create new plants
 I wanted to let users add new plants to the database and let them share it with other users. I didn't add this feature because it is very difficult to check whether the information they entered is correct.
+
 
 
