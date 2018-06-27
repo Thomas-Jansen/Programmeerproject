@@ -42,8 +42,10 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Activities.MyPlantActivity" />
-        <activity android:name=".Activities.AccountActivity" />
+        <activity android:name=".Activities.MyPlantActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.AccountActivity"
+            android:screenOrientation="portrait"/>
         <!--<activity android:name=".AddPlantActivity"></activity>-->
 
         <service

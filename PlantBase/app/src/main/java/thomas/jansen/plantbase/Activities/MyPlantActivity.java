@@ -550,7 +550,7 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
 
         GraphView graph = findViewById(R.id.graph);
         graph.setVisibility(View.VISIBLE);
-
+        graph.removeAllSeries();
         graph.getGridLabelRenderer().setNumHorizontalLabels(dataPointsTemp.length / 10);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
@@ -562,7 +562,6 @@ public class MyPlantActivity extends AppCompatActivity implements StorageRequest
 
         graph.getViewport().setScalable(true);
 
-        graph.destroyDrawingCache();
         graph.addSeries(seriesTemp);
         graph.addSeries(seriesHum);
         graph.addSeries(seriesMoist);

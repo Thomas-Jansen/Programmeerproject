@@ -72,6 +72,7 @@ public class BackgroundTask extends Service implements RequestMyPlants.Callback,
         // schedule the timer, to wake up every hour
         timer.schedule(timerTask, SECOND,  HOUR);
     }
+
     // Request notification.
     public void initializeTimerTask() {
         timerTask = new TimerTask() {

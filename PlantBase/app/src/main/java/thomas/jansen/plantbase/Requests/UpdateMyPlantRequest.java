@@ -54,6 +54,7 @@ public class UpdateMyPlantRequest {
                 if (myplant != null) {
                     if (myplant.getStartdate().compareTo(myPlant.getStartdate()) == 0) {
                         myRef.child(child.getKey()).setValue(myPlant);
+                        Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
