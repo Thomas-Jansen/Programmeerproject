@@ -10,6 +10,7 @@ The app uses a FireBase database and storage to hold all information and photos.
 It is possible you insert a PlantNode into the plant pot to track the real-time conditions in which the plant is growing. 
 The PlantNode is a battery powered photon particle with a light sensor, soil moisture sensor and a temperature- humidity sensor inside a 3D printed enclosure.
 
+![Alt text](https://github.com/Thomas-Jansen/Programmeerproject/blob/master/doc/final_design.jpg)
 
 ## Technical design
 
