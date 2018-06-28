@@ -23,7 +23,7 @@ const unsigned long POST_CONNECT_WAIT_MS = 8000;
 const unsigned long NAME_WAIT_MS = 20000;
 const unsigned long POST_PUBLISH_WAIT_MS = 2000;
 const unsigned long MAX_CONNECT_TIME_MS = 120000;
-const unsigned long SLEEP_TIME_SEC = 3;
+const unsigned long SLEEP_TIME_SEC = 1800;
 const char *PUBLISH_EVENT_NAME = "PlantNode_Data";
 
 const uint32_t RETAINED_DATA_MAGIC = 0xa2c7206a;
