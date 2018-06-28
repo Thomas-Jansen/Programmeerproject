@@ -7,6 +7,7 @@ PlantBase is an app with which you can track the growth of your plants. It has a
 #### Sources used:
 https://fabcirablog.weebly.com/blog/creating-a-never-ending-background-service-in-android
 https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+
 Pictures from: https://www.pexels.com/
 
 #### MIT License
