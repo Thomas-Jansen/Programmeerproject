@@ -2,6 +2,8 @@
 
 PlantBase is an app with which you can track the growth of your plants. It has a database with information of 19 vegetables and herbs with you can grow in your window sill. After creating an account, you can add a plant to your collection and track its growth by uploading pictures and setting a time interval between notifications to remind you to water the plant. The user can let the app know when a plant dies or when he/she watered the plant. The app uses a FireBase database and storage to hold all information and photos. It is possible you insert a PlantNode into the plant pot to track the real-time conditions in which the plant is growing. The PlantNode is a battery powered photon particle with a light sensor, soil moisture sensor and a temperature- humidity sensor inside a 3D printed enclosure.
 
+Demo video: https://youtu.be/nAOHKBm0JOQ
+
 ![Alt text](https://github.com/Thomas-Jansen/Programmeerproject/blob/master/doc/final_design.jpg)
 ![Alt text](https://github.com/Thomas-Jansen/Programmeerproject/blob/master/doc/PlantBase.jpeg)
 
